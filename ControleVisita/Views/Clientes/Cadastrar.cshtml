@@ -1,0 +1,118 @@
+﻿@using ControleVisita.Models
+@model ControleVisita.Models.PessoaModel
+@{
+    ViewBag.Title = "Cadastrar";
+}
+
+
+<h4>Adicionar Cliente</h4>
+<hr />
+
+@using (Html.BeginForm("Cadastrar", "Clientes", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <div class="form-row">
+
+        <div class="form-group col-md-6">
+
+            @Html.LabelFor(model => model.TipoPessoa)
+            @Html.DropDownListFor(model => model.TipoPessoa, new SelectList(ViewBag.ListTipoPessoa, "Value", "Text", "1"), new { @class = "form-control" })
+
+        </div>
+
+        <div class="form-group col-md-6">
+            @Html.LabelFor(a => a.Documento)
+            @Html.TextBoxFor(a => a.Documento, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(a => a.NomeCompleto)
+            @Html.TextBoxFor(a => a.NomeCompleto, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-md-6">
+            @Html.LabelFor(a => a.Email)
+            @Html.TextBoxFor(a => a.Email, new { @class = "form-control" })
+        </div>
+
+    </div>
+
+
+    <div class="form-row">
+        <div class="form-group col-2">
+            @Html.LabelFor(a => a.DDDFone)
+            @Html.TextBoxFor(a => a.DDDFone, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-4">
+            @Html.LabelFor(a => a.Telefone)
+            @Html.TextBoxFor(a => a.Telefone, new { @class = "form-control" })
+
+        </div>
+
+
+        <div class="form-group col-2">
+            @Html.LabelFor(a => a.DDDCelular)
+            @Html.TextBoxFor(a => a.DDDCelular, new { @class = "form-control" })
+        </div>
+        <div class="form-group col-4">
+            @Html.LabelFor(a => a.Celular)
+            @Html.TextBoxFor(a => a.Celular, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(a => a.DataNascimento)
+            @Html.TextBoxFor(a => a.DataNascimento, new { @class = "form-control", @type = "date" })
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(a => a.Endereco.UF)
+            @Html.TextBoxFor(a => a.Endereco.UF, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-md-6">
+            @Html.LabelFor(a => a.Endereco.Cidade)
+            @Html.TextBoxFor(a => a.Endereco.Cidade, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(a => a.Endereco.Logradouro)
+            @Html.TextBoxFor(a => a.Endereco.Logradouro, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(a => a.Informacao)
+            @Html.TextAreaFor(a => a.Informacao, new { @class = "form-control", @placeholder = "Informações do cliente" })
+        </div>
+    </div>
+
+
+    <button class="btn btn-primary" id="btnSalvar" name="salvar">Salvar</button>
+
+
+    @Html.ActionLink("Cancelar", "Index", "Home")
+
+
+
+}
+
+<script>
+
+    $(document).ready(function () {
+
+
+        $('.money').mask('000.000.000.000.000,00', { reverse: true });
+
+
+    });
+
+</script>

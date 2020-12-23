@@ -1,0 +1,49 @@
+﻿@model ControleVisita.Models.LoginModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Entrar</h2>
+
+@using (Html.BeginForm("Logar", "Login"))
+{
+    <div class="form-row">
+        <div class="form-group col-md-6">
+
+            @Html.LabelFor(a => a.Login)
+            @Html.DevExtreme().TextBoxFor(a => a.Login).Value("").Buttons(b => b.Add().Name("login").Location(TextEditorButtonLocation.After)
+                .Widget(w => w.Button().Type(ButtonType.Default).Icon(Url.Content("~/Content/Imagem/user.png"))))
+
+
+
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(a => a.Password)
+            @(Html.DevExtreme().TextBoxFor(a => a.Password).ID("password").Value("")
+                .Mode(TextBoxMode.Password)
+                .ShowClearButton(true)
+                .ActiveStateEnabled(true)
+                .Buttons(b => b.Add().Name("password")
+                    .Location(TextEditorButtonLocation.After)
+                    .Widget(w => w.Button().Type(ButtonType.Default).Icon(Url.Content("~/Content/Imagem/eye.png")).OnClick("changePasswordMode"))
+                ))
+        </div>
+    </div>
+
+    <button type="submit" id="btnLogar" onclick="onclickEntrar()" class="btn btn-primary">Entrar</button>
+}
+
+<script>
+    function changePasswordMode() {
+        var passwordEditor = $("#password").dxTextBox("instance");
+        passwordEditor.option("mode", passwordEditor.option("mode") === "text" ? "password" : "text");
+    }
+
+    function onclickEntrar() {
+
+        document.getElementById('btnLogar').value = 'Entrando...';
+    }
+</script>

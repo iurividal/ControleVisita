@@ -1,0 +1,105 @@
+@using System.Globalization
+@using ControleVisita.Models
+
+@{
+    ViewBag.Title = "Index";
+    ViewBag.BomDia = DateTime.Now.Hour < 12 ? "BOM DIA" : DateTime.Now.Hour < 18 ? "BOA TARDE" : "BOA NOITE";
+}
+
+<div class="h4 card-title">@ViewBag.BomDia  @ViewBag.Usuario !</div>
+
+
+<div class="card">
+    <div class="card-header">Atalhos</div>
+    <div class="card-body">
+
+        <div class="row" style="text-align:center">
+
+            <div class="col-sm-3 col-md-2 ">
+                <a href="@Url.Action("Cadastrar","Visita")"> <img src="~/Content/Imagem/Home_48px.png" /><br /> Cadastrar  Visita </a>
+
+                @*@Html.ActionLink("Cadastrar  Visita", "Cadastrar", "Visita", null, new { @class = "imghome" })*@
+            </div>
+
+            <div class="col-sm-3 col-md-2 center">
+                <a href="@Url.Action("ListaVisita","Visita")"> <img src="~/Content/Imagem/Search_48px.png" /> <br /> Consultar Visitas </a>
+
+            </div>
+
+            <div class="col-sm-3 col-md-2 center">
+
+                <a href="@Url.Action("MotivoNaoVenda","Gestao")"> <img src="~/Content/Imagem/Chart_48px.png" /> <br /> Motivos não venda </a>
+
+            </div>
+
+            <div class="col-sm-3 col-md-2 center">
+                <a href="@Url.Action("Vendas","Gestao")"> <img src="~/Content/Imagem/venda_mes.png" /> <br /> Vendas mês a mês </a>
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+@*@(Html.DevExtreme().DataGrid<ControleVisita.Models.VisitaModel>()
+        .DataSource(ViewBag.ListaVisitaAgenda as List<VisitaModel>)
+        .KeyExpr("Id")
+        .LoadPanel(m => m.Enabled(true))
+        .RemoteOperations(true)
+
+        .ColumnHidingEnabled(false)
+        .AllowColumnResizing(true)
+        .AllowColumnReordering(true)
+        .RowAlternationEnabled(true)
+        .ColumnChooser(c => c.Enabled(true))
+        .Columns(columns =>
+        {
+
+
+            columns.AddFor(m => m.Id).Visible(false);
+
+            columns.AddFor(m => m.Usuario).GroupIndex(0);
+            columns.AddFor(m => m.DataVisita).Caption("Data. Primeira Visita")
+                .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
+
+            columns.AddFor(m => m.Cliente.NomeCompleto).Caption("Cliente");
+            columns.AddFor(m => m.Cliente.NroCelularCompleto);
+            columns.AddFor(m => m.IsVendaRealizada).Caption("Venda Realizada").Visible(false);
+            columns.AddFor(m => m.MotivoNaoVenda)
+                .Lookup(l => l.DataSource(w => w.WebApi().Controller("MotivoApi")
+                    .LoadAction("Get")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("Motivo")
+                    ).ValueExpr("Motivo")
+                    .DisplayExpr("Motivo")
+
+                );
+
+            columns.AddFor(m => m.Agendamento.DataAgendamento).Caption("Data Reagendamento").DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
+
+            columns.AddFor(m => m.HistoricoVisita).DataType(GridColumnDataType.String);
+
+            columns.AddFor(m => m.ValorBem).Format(Format.Currency);
+
+
+
+        })
+        .Editing(e => e
+            .AllowAdding(false)
+            .AllowUpdating(true)
+            .AllowDeleting(true)
+            .Mode(GridEditMode.Popup)
+            .UseIcons(true))
+        .ShowBorders(true)
+        .FilterPanel(f => f.Visible(true))
+        .FilterRow(a => a.Visible(true))
+
+
+    )*@

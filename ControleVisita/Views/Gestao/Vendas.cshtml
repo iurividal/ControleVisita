@@ -1,0 +1,82 @@
+﻿@model  IEnumerable<ControleVisita.Models.VendasChartViewModel>
+@{
+    ViewBag.Title = "Evolução de Vendas";
+}
+
+<div>
+    <a href="@Url.Action("Index","Home")"><img src="~/Content/Imagem/Back Arrow_48px.png" alt="Home" /> </a>
+</div>
+
+<h2>Evolução Mensal das Vendas</h2>
+
+
+
+@using (Html.BeginForm())
+{
+
+    <div class="card">
+        <div class="card-header">Filtros</div>
+
+        <div class="card-body">
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+
+                    Data Visita Inicial:
+                    @Html.DevExtreme().DateBox().ID("datainicial").Name("datainicial").Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").InputAttr("required", "true")
+
+
+                </div>
+
+                <div class="form-group col-md-4">
+
+                    Data Visita Final:
+                    @Html.DevExtreme().DateBox().ID("datafinal").Name("datafinal").Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").InputAttr("required", "true")
+
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-inline col-md-12">
+                    <button class="btn btn-primary">Pesquisar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<br />
+
+<div class="row">
+    <div class="col-12">
+
+        @(Html.DevExtreme().Chart()
+            //.Size(s => s.Width(800))
+            .ID("chart")
+            .Series(s => s
+                .Add()
+                .ArgumentField("Mes")
+                .ValueField("Qtd")
+                .Name("Vendas")
+
+                .Type(SeriesType.Bar)
+               // .Color("#ffaa66")
+            )
+            .Title("VENDA MENSAL")
+            .DataSource(Model)
+           
+        )
+
+    </div>
+
+</div>
+
+<script>
+    function toggleVisibility(item) {
+        if (item.isVisible()) {
+            item.hide();
+        } else {
+            item.show();
+        }
+    }
+</script>

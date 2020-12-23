@@ -1,0 +1,419 @@
+﻿
+
+@using ControleVisita.Models.IdentityExtensions
+@model  IEnumerable<ControleVisita.Models.VisitaModel>
+@{
+    ViewBag.Title = "ListaVisita";
+    //ViewBag.TitlePesquisa = "";
+}
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/3.3.1/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
+
+
+
+
+<div style="padding-bottom: 20px">
+    <a href="@Url.Action("Index","Home")"><img src="~/Content/Imagem/Back Arrow_48px.png" alt="Home" /> </a>
+</div>
+
+<h2>Visitas Cadastradas</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-header">Filtros</div>
+
+        <div class="card-body">
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+
+                    Data Visita Inicial:
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("datainicial").InputAttr("required", "true")
+
+
+                </div>
+
+                <div class="form-group col-md-4">
+
+                    Data Visita Final:
+                    @Html.DevExtreme().DateBox().Name("datafinal").Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").InputAttr("required", "true")
+
+                </div>
+
+                <div class="form-inline col-md-4">
+                    Somente Vendida:
+                    @Html.DevExtreme().CheckBox().Name("isVendaRealizada").Value(false)
+
+                </div>
+
+
+            </div>
+            <div class="form-row">
+                <div class="form-inline col-md-12">
+
+                    <button class="btn btn-primary">Pesquisar</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+<br />
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h4>@ViewBag.TitlePesquisa</h4>
+    </div>
+</div>
+
+
+<div id="gridVisita" class="row">
+    @*<div>@Html.ActionLink("Cadastrar", "Cadastrar", null, new { @class = "btn btn-primary" })</div>*@
+    @(Html.DevExtreme().DataGrid<ControleVisita.Models.VisitaModel>()
+        .DataSource(ViewBag.VisitaList as List<ControleVisita.Models.VisitaModel>
+        )
+        .OnRowUpdating("OnRowUpdating")
+        .OnRowRemoving("OnRowRemoving")
+        .NoDataText("Nenhuma visita cadastrada para período informado")
+        .DataSource(Model)
+        .LoadPanel(m => m.Enabled(true))
+        .RowAlternationEnabled(true)
+        .Export(e => e.Enabled(true).AllowExportSelectedData(false))
+        .OnExporting("exporting")
+        .FilterRow(f => f.Visible(true))
+        .HeaderFilter(f => f.Visible(true))
+        .ColumnHidingEnabled(true)
+        .ColumnChooser(c => c.Enabled(true))
+
+        .Columns(columns =>
+        {
+
+            columns.Add().Caption("").CellTemplate(@<text>
+
+                                                             <a href="@Url.Action("Cadastrar", "Visita")?p=<%= data.Id%>" class="dx-icon-edit"></a>
+
+                                                          </text>).VisibleIndex(0).Width(50);
+        columns.AddFor(m => m.Id).Visible(true).AllowEditing(false).Width(80).VisibleIndex(0);
+        columns.AddFor(m => m.Usuario).GroupIndex(0).VisibleIndex(1);
+        columns.AddFor(m => m.DataVisita).DataType(GridColumnDataType.Date).Width(100)
+            .Format("dd/MM/yyyy").AllowResizing(true).SortOrder(SortOrder.Desc).VisibleIndex(3);
+        columns.AddFor(m => m.Cliente.NomeCompleto).Caption("Cliente").VisibleIndex(4);
+        columns.AddFor(m => m.Cliente.NroCelularCompleto).Visible(false).VisibleIndex(5);
+        columns.AddFor(m => m.Cliente.DddCelular).Visible(false).VisibleIndex(6);
+        columns.AddFor(m => m.Cliente.Celular).Visible(false).VisibleIndex(7);
+        columns.AddFor(m => m.Cliente.Email).Caption("E-mail").Visible(false).VisibleIndex(8);
+        columns.AddFor(m => m.VendaRealizadaStr).Caption("Venda Realizada").VisibleIndex(9).Width(100);
+        columns.AddFor(m => m.Cliente.Telefone).Caption("Telefone").Visible(false).VisibleIndex(10);
+            columns.AddFor(m => m.Cliente.Endereco.UF).Caption("Estado").Visible(false).VisibleIndex(11);
+        columns.AddFor(m => m.Cliente.Endereco.Cidade).Caption("Cidade").Visible(false).VisibleIndex(12);
+        columns.AddFor(m => m.Cliente.Endereco.Logradouro).Caption("Logradouro").Visible(false).VisibleIndex(13);
+
+            columns.AddFor(m => m.MotivoNaoVenda)
+                .Lookup(l => l.DataSource(w => w.WebApi().Controller("MotivoApi")
+                    .LoadAction("Get")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("Motivo")
+                    ).ValueExpr("Motivo")
+                    .DisplayExpr("Motivo")
+
+                ).VisibleIndex(14);
+
+
+
+
+            columns.AddFor(m => m.Agendamento.DataAgendamento).VisibleIndex(14)
+                .Caption("Data Reagendamento").DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Width(100);
+
+
+
+            columns.AddFor(m => m.BemViewModel.Marca).Visible(false).VisibleIndex(15);
+            columns.AddFor(m => m.BemViewModel.Modelo).Visible(false).VisibleIndex(16);
+
+
+            columns.AddFor(m => m.ValorBem).VisibleIndex(17).Name("vlr_bem").CssClass("money").CalculateCellValue(@<text>
+
+                                                                   function(data){
+                                                                   return  [data.ValorBem].toLocaleString('pt-br', { minimumFractionDigits: 2 })
+                                                                   }
+
+                                                                </text>);
+            // columns.AddFor(m => m.Cliente.DddCelular);
+            // columns.AddFor(m => m.Cliente.Celular);
+            columns.AddFor(m => m.Cliente.WhatsApp).Visible(false);
+            columns.AddFor(m => m.HistoricoVisita);
+
+            columns.AddFor(m => m.Cliente.Atividade).Visible(false);
+
+        })
+    .ShowBorders(true)
+
+    .Editing(e => e
+    .AllowAdding(false)
+    .AllowUpdating(false)
+    .AllowDeleting(true)
+    .Mode(GridEditMode.Popup)
+    .UseIcons(true)
+    .Form(f=>f.Items(items =>
+    {
+
+
+    items.AddGroup()
+    .Caption("Dados do Cliente")
+    .Items(g =>
+    {
+    g.AddSimpleFor(m => m.Cliente.NomeCompleto);
+    g.AddSimpleFor(m => m.Cliente.DddCelular).Editor(editor => editor.TextBox().Mask("00"));
+    g.AddSimpleFor(m => m.Cliente.Celular).Editor(editor => editor.TextBox().Mask("00000-0000"));
+
+    g.AddSimpleFor(m => m.Cliente.DDDFone);
+    g.AddSimpleFor(m => m.Cliente.Telefone);
+    g.AddSimpleFor(m => m.Cliente.WhatsApp).ColSpan(4);
+
+    g.AddSimpleFor(m => m.Cliente.Endereco.UF)
+    .Editor(editor=>editor.SelectBox().DataSource(ds=>ds.WebApi()
+    .Controller("UFApi")
+    .LoadAction("GetUF")
+    .LoadMode(DataSourceLoadMode.Raw)
+    .CacheRawData(true)
+    .Key("ID"))
+    .DisplayExpr("NOME")
+    .ValueExpr("NOME")
+    .SearchEnabled(true)
+    .OnSelectionChanged("Cidade")
+    // .OnValueChanged("Cidade")
+    .ID("dxUF"));
+
+    g.AddSimpleFor(m => m.Cliente.Endereco.Cidade)
+    .Editor(editor => editor.Lookup().DataSource(ds => ds.WebApi()
+    .Controller("CidadeApi")
+    .LoadAction("GetCidade")
+    .Key("NOME")
+    .LoadMode(DataSourceLoadMode.Raw)
+    .CacheRawData(true)
+    )
+    .DisplayExpr("NOME")
+    .ValueExpr("NOME")
+    .SearchEnabled(true)
+    .ID("dxCidade"));
+
+    g.AddSimpleFor(m => m.Cliente.Endereco.Logradouro);
+
+
+
+    });
+
+    items.AddGroup()
+    .Caption("Dados da Visita")
+    .ColCount(1)
+    .ColSpan(2)
+    .Items(g =>
+    {
+    g.AddSimpleFor(m => m.Id).Editor(editor=>editor.TextBox());
+    g.AddSimpleFor(m => m.DataVisita).Editor(editor => editor.DateBox().Max(DateTime.Now));
+    g.AddSimpleFor(m => m.VendaRealizadaStr).Editor(editor=>editor.TextBox());
+    g.AddSimpleFor(m => m.Agendamento.DataAgendamento).Editor(editor => editor.DateBox());
+    g.AddSimpleFor(m => m.MotivoNaoVenda).Editor(editor => editor.SelectBox()
+    .DataSource(ds => ds.WebApi()
+    .Controller("MotivoApi").LoadAction("Get").Key("Motivo")
+    .LoadMode(DataSourceLoadMode.Raw)
+    )
+
+    .ValueExpr("Motivo")
+    .DisplayExpr("Motivo")
+    .OnValueChanged("onchangeMotivo")
+    .ShowClearButton(true)
+    .Placeholder("Selecione o Motivo"))
+    ;
+
+
+    g.AddSimpleFor(m => m.BemViewModel.Marca)
+    .Editor(editor => editor.SelectBox().DataSource(ds => ds.WebApi().RouteName("selectbox")
+    .LoadAction("GetBems").Key("Marca")
+    .LoadParams(new {empresa = @User.Identity.GetEmpresa()})
+    .LoadMode(DataSourceLoadMode.Raw)
+    ).DisplayExpr("Marca")
+    .ValueExpr("Marca")
+
+    .Placeholder("Selecione o marca"));
+
+    g.AddSimpleFor(m => m.BemViewModel.Modelo);
+    g.AddSimpleFor(m => m.ValorBem);
+
+
+    g.AddSimpleFor(m => m.HistoricoVisita)
+    .ColSpan(6)
+    .Editor(editor => editor.TextArea().Height(100).Width(300));
+
+    });
+    }))
+
+    )
+    .SortByGroupSummaryInfo(i => i.Add().SummaryItem("count"))
+    .Summary(s=>s.TotalItems(items =>
+    {
+    items.AddFor(m => m.Id).SummaryType(SummaryType.Count)
+    .DisplayFormat("Total: {0}");
+
+
+
+    }))
+    .Summary(s=> s.GroupItems(items =>
+    {
+    //items.AddFor(m => m.Cliente)
+    //    .SummaryType(SummaryType.Count)
+    //    .DisplayFormat("Total Cadastrado: {0}");
+
+    //items.AddFor(m => m.Id)
+    //    .SummaryType(SummaryType.Count)
+    //    .ShowInGroupFooter(true)
+    //    .DisplayFormat("Total: {0}");
+
+    })))
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+
+    $(document).ready(function() {
+
+        $('.money').mask('000.000.000.000.000,00', { reverse: true});
+        });
+
+        function FormataCurrency(e) {
+            return e.toLocaleString('pt-br', { minimumFractionDigits: 2 });
+    }
+
+    function onchangeMotivo(e) {
+
+
+        if (e.value === "SEM INTERESSE") {
+            $("#Agendamento_DataAgendamento").prop('required', false);
+            $("#HistoricoVisita").prop('required', false);
+        }
+        else if (e.value === "COMPARANDO COM A CONCORRÊNCIA") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+
+        else if (e.value === "AVALIANDO PROPOSTA") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+        else if (e.value === "SOLICITOU CONTATO FUTURO") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+        else if (e.value === "NÃO ATENDEU") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+        else if (e.value === "OUTROS") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+            $("#HistoricoVisita").prop('required', true);
+        }
+        else if (e.value === "OUTROS") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+            $("#HistoricoVisita").prop('required', true);
+        }
+
+        else if (e.value === "OUTROS") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+            $("#HistoricoVisita").prop('required', true);
+        }
+
+        else if (e.value === "JÁ TEM COTA DE OUTRA ADMINISTRADORA") {
+            $("#Agendamento_DataAgendamento").prop('required', false);
+            $("#HistoricoVisita").prop('required', true);
+
+        } else {
+            $("#Agendamento_DataAgendamento").prop('required', false);
+            $("#HistoricoVisita").prop('required', false);
+
+
+        }
+
+    }
+
+
+    function Cidade(e) {
+
+       console.log(e);
+
+        $("#dxCidade").dxSelectBox("instance").getDataSource().filter(["ESTADO", "=", e.value]);
+        $("#dxCidade").dxSelectBox("instance").getDataSource().reload();
+    }
+
+    function exporting(e) {
+        var workbook = new ExcelJS.Workbook();
+        var worksheet = workbook.addWorksheet('Visita');
+
+        DevExpress.excelExporter.exportDataGrid({
+            component: e.component,
+            worksheet: worksheet,
+            autoFilterEnabled: true
+        }).then(function() {
+            // https://github.com/exceljs/exceljs#writing-xlsx
+            workbook.xlsx.writeBuffer().then(function(buffer) {
+                saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'Visitas.xlsx');
+            });
+        });
+        e.cancel = true;
+    }
+
+    function sendRequest(url, method, data) {
+        var d = $.Deferred();
+
+        method = method || "GET";
+
+        $.ajax(url,
+            {
+            method: method,
+                data: data,
+                cache: false,
+                xhrFields: { withCredentials: true }
+        }).then(function(result) {
+            d.resolve(method === "GET" ? result.data : result);
+        },
+            function(xhr) {
+            d.reject(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+        });
+
+        return d.promise();
+    }
+
+
+    function OnRowUpdating(e) {
+
+        console.log(e);
+
+        @*var url = '@Url.Action("Cadastrar","Visita")?idvisita=' + e.key.ID;
+
+        window.location(url);*@
+       sendRequest('../api/VisitaApi/?id=' + e.key.Id + "&empresa=" + '@User.Identity.GetEmpresa()' + "&codgrupo="+'@User.Identity.Getcodgrupo()'+"&login="+'@User.Identity.GetUsuario()', "PUT", { key: e.key, values: JSON.stringify(e.newData) });
+    }
+
+    function OnRowRemoving(e) {
+
+      
+        sendRequest('../api/VisitaApi/?id=' + e.key.Id+'&usuario=@User.Identity.GetUsuario()'+'&empresa=@User.Identity.GetEmpresa()', "DELETE", { key: e.key, values: JSON.stringify(e.newData) });
+
+    }
+
+
+</script>
+

@@ -1,0 +1,344 @@
+﻿@using ControleVisita.Models.IdentityExtensions
+@model ControleVisita.Models.VisitaModel
+@{
+    ViewBag.Title = "Cadastrar";
+}
+<script src="~/Scripts/Mascara.js"></script>
+<div style="padding-bottom: 20px">
+    <a href="@Url.Action("Index","Home")"><img src="~/Content/Imagem/Back Arrow_48px.png" alt="Home" /> </a>
+</div>
+
+
+
+@using (Html.BeginForm("Cadastrar", "Visita", FormMethod.Post, new { @class = "", @name = "formCadastrar" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+
+    <div class="card">
+        <div class="card-header"><h4>Cadastrar Visita</h4></div>
+        <div class="card-body">
+
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(a => a.Id)
+                    @Html.DevExtreme().TextBoxFor(m => m.Id).ReadOnly(true).Placeholder("Automático")
+                </div>
+
+                <div class="form-group col-md-6">
+
+                    @Html.LabelFor(a => a.DataVisita)
+                    @Html.DevExtreme().DateBoxFor(d => d.DataVisita).Max(DateTime.Now).DisplayFormat("dd/MM/yyyy").InputAttr("required", true)
+
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(a => a.Cliente.NomeCompleto)
+                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.NomeCompleto).InputAttr("required", true)
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(a => a.Cliente.Atividade)
+                    @(Html.DevExtreme().LookupFor(a=>a.Cliente.Atividade)
+                .DataSource(ds=>ds.WebApi()
+                    .RouteName("selectbox")
+                    .LoadAction("GetAtividades")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                )
+                .DisplayExpr("Profissao")
+                .ValueExpr("Profissao")
+                .SearchMode(DropDownSearchMode.Contains)
+                .SearchEnabled(true))
+
+
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(a => a.Cliente.Email):
+                    @Html.DevExtreme().TextBoxFor(a => a.Cliente.Email).InputAttr("required", true)
+
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-1">
+                    @Html.LabelFor(a => a.Cliente.DddCelular)
+                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.DddCelular).Mask("00").InputAttr("required", true)
+                </div>
+                <div class="form-group col-md-3">
+                    @Html.LabelFor(a => a.Cliente.Celular)
+                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.Celular).Mask("00000-0000").InputAttr("required", true)
+                </div>
+
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(a => a.Cliente.WhatsApp)
+                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.WhatsApp).Mask("+55 (99) 00000-0000").MaskInvalidMessage("Número inválido")
+                </div>
+
+
+                <div class="form-group col-md-1">
+                    @Html.LabelFor(a => a.Cliente.DDDFone)
+                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.DDDFone).Mask("00")
+                </div>
+                <div class="form-group col-md-3">
+                    @Html.LabelFor(a => a.Cliente.Telefone)
+                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.Telefone).MaxLength(20)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-3">
+
+                    @Html.LabelFor(a => a.Cliente.Endereco.UF)
+
+                    @(Html.DevExtreme().SelectBoxFor(a => a.Cliente.Endereco.UF).InputAttr("required", true)
+            .DataSource(ds => ds.WebApi()
+                .Controller("UFApi")
+                .LoadAction("GetUF")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("ID")
+
+            )
+            .DisplayExpr("NOME")
+            .ValueExpr("NOME")
+
+            .SearchEnabled(true)
+            .OnValueChanged("Cidade")
+            .ID("dxUF")
+
+            )
+                </div>
+
+
+                <div class="form-group col-md-3">
+
+                    @Html.LabelFor(a => a.Cliente.Endereco.Cidade)
+
+                    @(Html.DevExtreme().SelectBoxFor(a => a.Cliente.Endereco.Cidade).InputAttr("required", true)
+                .DataSource(ds => ds.WebApi()
+                    .Controller("CidadeApi")
+                    .LoadAction("GetCidade")
+                    .Key("ID")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                )
+
+                .DisplayExpr("NOME")
+                .ValueExpr("NOME")
+                .SearchEnabled(true)
+                .ID("dxCidade")
+
+
+            )
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(a => a.Cliente.Endereco.Logradouro)
+                    @Html.DevExtreme().TextBoxFor(a => a.Cliente.Endereco.Logradouro)
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+
+                <div class="form-group col-md-4">
+
+
+                    @Html.LabelFor(a => a.MotivoNaoVenda)
+
+                    @*@Html.DropDownListFor(a => a.MotivoNaoVenda, ViewBag.Motivos as SelectList, new { @class = "form-control" })*@
+
+
+
+                    @(Html.DevExtreme().SelectBoxFor(a => a.MotivoNaoVenda)
+                    .ID("cbxMotivo")
+                    .DataSource(ds => ds.WebApi()
+                        .Controller("MotivoApi").LoadAction("Get")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                    ).ValueExpr("Motivo")
+                    .DisplayExpr("Motivo")
+
+                    .OnValueChanged("onchangeMotivo")
+                    .ShowClearButton(true)
+
+                    .Placeholder("Selecione o Motivo"))
+                </div>
+
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(a => a.Agendamento.DataAgendamento)
+                    @Html.DevExtreme().DateBoxFor(a => a.Agendamento.DataAgendamento).DisplayFormat("dd/MM/yyyy")
+                </div>
+
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(a => a.ValorBem):
+                    @Html.DevExtreme().TextBoxFor(a => a.ValorBemAux).InputAttr("class", "money")
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="col-md-6 form-group">
+
+                    @Html.LabelFor(a => a.BemViewModel.Marca)
+                    @(Html.DevExtreme().SelectBoxFor(a=>a.BemViewModel.Marca)
+                    .DataSource(ds=>ds.WebApi().RouteName("selectbox")
+                        .LoadAction("GetBems")
+                        .LoadParams(new {empresa = @User.Identity.GetEmpresa()})
+                        .LoadMode(DataSourceLoadMode.Raw)
+                    ).DisplayExpr("Marca")
+                    .ValueExpr("Marca")
+                    .Placeholder("Selecione a marca"))
+
+                </div>
+
+                <div class="col-md-6 form-group">
+
+                    @Html.LabelFor(a => a.BemViewModel.Modelo)
+                    @Html.DevExtreme().TextBoxFor(a => a.BemViewModel.Modelo)
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(a => a.HistoricoVisita)
+                    @Html.DevExtreme().TextAreaFor(a => a.HistoricoVisita).MaxLength(4000).Placeholder("Informações sobre a visita ou sobre o cliente...")
+
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="onSubmit" id="btnSalvar" name="salvar">Salvar</button>
+
+            @Html.ActionLink("Cancelar", "Index", "Home")
+        </div>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header"><h4>Cadastros realizados Hoje</h4></div>
+    <div class="card-body">
+        @Html.Partial("GridVisita")
+    </div>
+</div>
+
+
+<script>
+
+
+    $(document).ready(function() {
+
+        var error = "@ViewBag.Error";
+
+        //$("#Agendamento_DataAgendamento").prop('required', true);
+
+        //console.log(error);
+
+        if (error.length > 0) {
+
+            DevExpress.ui.notify(GetMsg(error), GetTypeMsg(error), 3000);
+        };
+
+         $('.money').mask('000.000.000.000.000,00', { reverse: true});
+
+    });
+
+    function GetMsg(msg) {
+
+        switch (msg.split('|')[0]) {
+            case '0':
+                return "Cadastro Realizado com sucesso";
+            case '1':
+                return "Preencha os campos obrigatórios";
+
+            default :
+                return msg.split('|')[0];
+            }
+    };
+
+    function GetTypeMsg(msg) {
+
+        return msg.split('|')[1];
+    }
+
+    //$("#formCadastrar").submit(function (event) {
+    //    $('.money').;
+    //});
+
+
+
+    function Cidade(e) {
+
+        $("#Endereco_Cidade").val("");
+
+        $("#dxCidade").dxSelectBox("instance").getDataSource().filter(["ESTADO", "=", e.value]);
+        $("#dxCidade").dxSelectBox("instance").getDataSource().reload();
+    }
+
+    function onchangeMotivo(e) {
+
+
+
+        console.log(e.value);
+
+        if (e.value === "SEM INTERESSE") {
+            $("#Agendamento_DataAgendamento").prop('required', false);
+            $("#HistoricoVisita").prop('required', false);
+        }
+        else if (e.value === "COMPARANDO COM A CONCORRÊNCIA") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+
+        else if (e.value === "AVALIANDO PROPOSTA") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+        else if (e.value === "SOLICITOU CONTATO FUTURO") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+        else if (e.value === "NÃO ATENDEU") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+        }
+        else if (e.value === "OUTROS") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+            $("#HistoricoVisita").prop('required', true);
+        }
+        else if (e.value === "OUTROS") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+            $("#HistoricoVisita").prop('required', true);
+        }
+
+        else if (e.value === "OUTROS") {
+            $("#Agendamento_DataAgendamento").prop('required', true);
+            $("#HistoricoVisita").prop('required', true);
+        }
+
+        else if (e.value === "JÁ TEM COTA DE OUTRA ADMINISTRADORA") {
+            $("#Agendamento_DataAgendamento").prop('required', false);
+            $("#HistoricoVisita").prop('required', true);
+
+        } else {
+            $("#Agendamento_DataAgendamento").prop('required', false);
+            $("#HistoricoVisita").prop('required', false);
+
+
+        }
+
+    }
+
+    function onSubmit() {
+
+        console.log($('#Agendamento_DataAgendamento').val());
+
+        if ($('#Agendamento_DataAgendamento').val() == null)
+            alert('Você não está reagendando a visita ela será cadastra e finalizada');
+    }
+
+</script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -38,14 +39,22 @@ namespace ControleVisita.Controllers
         }
 
 
+
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult Cadastrar(VisitaModel model)
         {
 
+
             if (ModelState.IsValid)
             {
+
+
+
                 var user = (LoginModel)Session["USUARIOLOGADO"];
+
+
 
                 if (!string.IsNullOrEmpty(model.ValorBemAux))
                 {
@@ -54,6 +63,8 @@ namespace ControleVisita.Controllers
                     var value = Decimal.Parse(remove, CultureInfo.InvariantCulture);
                     model.ValorBem = value;
                 }
+
+
 
                 VisitaViewModel.AddOrUpdate(model, user);
 
@@ -92,30 +103,50 @@ namespace ControleVisita.Controllers
 
             if (!string.IsNullOrEmpty(request))
             {
-                listaView = (List<VisitaModel>) await visita.GetNextVisita(User.Identity.Getcodgrupo(), User.Identity.GetEmpresa());
+                listaView = (List<VisitaModel>)await visita.GetNextVisita(User.Identity.Getcodgrupo(), User.Identity.GetEmpresa());
             }
 
             return View(listaView.OrderByDescending(a => a.DataVisita).ToList());
         }
 
 
+        //[HttpPost]
+        //public ActionResult ListaVisita(DateTime datainicial, DateTime datafinal, bool isVendaRealizada)
+        //{
+
+
+        //    var response = VisitaViewModel
+        //        .Get(User.Identity.Getcodgrupo(), datainicial, datafinal)
+        //        .WhereIf(isVendaRealizada, model => model.IsVendaRealizada)
+        //        .ToList()
+        //        .OrderByDescending(a => a.DataVisita);
+
+        //    ViewBag.TitlePesquisa = $"Período {datainicial.Date:dd/MM/yyyy} até {datafinal:dd/MM/yyyy}";
+
+
+        //    return View(response);
+        //}
+
         [HttpPost]
-        public ActionResult ListaVisita(DateTime datainicial, DateTime datafinal, bool isVendaRealizada)
+        public ActionResult ListaVisita(FiltroModelView filtro)
         {
 
 
             var response = VisitaViewModel
-                .Get(User.Identity.Getcodgrupo(), datainicial, datafinal)
-                .WhereIf(isVendaRealizada, model => model.IsVendaRealizada)
+                .GetVisitas(User.Identity.Getcodgrupo(), User.Identity.GetEmpresa(), filtro)
                 .ToList()
                 .OrderByDescending(a => a.DataVisita);
 
-            ViewBag.TitlePesquisa = $"Período {datainicial.Date:dd/MM/yyyy} até {datafinal:dd/MM/yyyy}";
 
+            //  ViewBag.TitlePesquisa = $"Período {datainicial.Date:dd/MM/yyyy} até {datafinal:dd/MM/yyyy}";
 
             return View(response);
         }
 
+        public ActionResult Agenda()
+        {
+            return View();
+        }
 
 
     }

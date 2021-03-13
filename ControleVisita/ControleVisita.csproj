@@ -48,6 +48,12 @@
     <Reference Include="ApiConsorcioNet">
       <HintPath>..\..\..\FONTES_TORTOISE\ApiConsorcio\ApiConsorcio\bin\Debug\ApiConsorcioNet.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.78\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Oracle, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Oracle.2.0.2\lib\net461\Dapper.Oracle.dll</HintPath>
+    </Reference>
     <Reference Include="Devart.Data, Version=5.0.1256.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Devart\dotConnect\Oracle\Devart.Data.dll</HintPath>
@@ -64,14 +70,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Devart\dotConnect\Linq\Devart.Data.Oracle.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Data.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Patch.Common">
-      <HintPath>..\..\..\Crack\Universal Patches\DevExpress Patch 9.0 by dimaster 2019 Edition\DevExpress.Patch_9.0_Mod_2019\DevExpress.Patch.Common.dll</HintPath>
+    <Reference Include="DevExpress.Data.v20.2, Version=20.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExtreme.AspNet.Data, Version=2.7.1.0, Culture=neutral, PublicKeyToken=982f5dab1439d0f7, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevExtreme.AspNet.Data.2.7.1\lib\net452\DevExtreme.AspNet.Data.dll</HintPath>
     </Reference>
-    <Reference Include="DevExtreme.AspNet.Data, Version=2.5.1.0, Culture=neutral, PublicKeyToken=982f5dab1439d0f7, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevExtreme.AspNet.Data.2.5.1\lib\net452\DevExtreme.AspNet.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExtreme.AspNet.Mvc">
+    <Reference Include="DevExtreme.AspNet.Mvc, Version=20.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\DevExtreme\DevExtreme.AspNet.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="FluentDateTime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
@@ -172,6 +176,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.19.10.1\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -293,6 +300,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Security.AccessControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.AccessControl.4.5.0\lib\net461\System.Security.AccessControl.dll</HintPath>
@@ -632,6 +640,7 @@
     <Content Include="Views\Filtro\Filtro.cshtml" />
     <Content Include="Views\Visita\GridVisita.cshtml" />
     <Content Include="Views\Shared\_Notifications.cshtml" />
+    <Content Include="Views\Shared\_Agenda.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -708,6 +717,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AgendaApiController.cs" />
     <Compile Include="Controllers\CidadeApiController.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\ClientesController.cs" />
@@ -726,6 +736,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AgendaModel.cs" />
+    <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\BemViewModel.cs" />
     <Compile Include="Models\CidadeModel.cs" />
     <Compile Include="Models\CidadeViewModel.cs" />
@@ -733,6 +744,7 @@
     <Compile Include="Models\DataContext\VisitaModel.Designer.cs" />
     <Compile Include="Models\EnderecoModel.cs" />
     <Compile Include="Models\Enum\TipoPessoa.cs" />
+    <Compile Include="Models\FiltroModelView.cs" />
     <Compile Include="Models\IdentityExtensions\IdentityExtensions.cs" />
     <Compile Include="Models\LoginData.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -747,12 +759,14 @@
     <Compile Include="Models\SampleData.cs" />
     <Compile Include="Models\VendasChartModel.cs" />
     <Compile Include="Models\VendasChartViewModel.cs" />
+    <Compile Include="Models\VendedorModel.cs" />
     <Compile Include="Models\VisitaModel.cs" />
     <Compile Include="Models\VisitaViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ViewModel\" />
     <Folder Include="Views\Localization\" />
   </ItemGroup>
   <ItemGroup>
@@ -788,7 +802,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties TemplateFeatures="NET CS BASELINE" />
+      <UserProperties TemplateFeatures="NET CS BASELINE" DismissedDevExtremeVersion="20.2.3.0" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

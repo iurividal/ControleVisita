@@ -1,0 +1,67 @@
+﻿@using ControleVisita.Models.IdentityExtensions;
+
+
+@(Html.DevExtreme().Scheduler()
+    .ID("scheduler")
+    .DataSource(d => d.WebApi()
+        .Controller("AgendaApi")
+        .LoadMethod("GET")
+        .LoadParams(new { codgrupo = User.Identity.Getcodgrupo(), empresa = User.Identity.GetEmpresa() })
+        .Key("AppointmentId")
+        .DeleteAction(false)
+        .UpdateAction(false)
+        .InsertAction(false)
+    )
+    .TimeZone("E. South America Standard Time")
+    .DateSerializationFormat("yyyy-MM-ddTHH:mm:ssZ")
+    .RemoteFiltering(true)
+    .FirstDayOfWeek(FirstDayOfWeek.Sunday)
+  .Views(new[] {
+    //  SchedulerViewType.Day,
+     // SchedulerViewType.WorkWeek,
+      SchedulerViewType.Month,
+      SchedulerViewType.Agenda,
+  })
+    .Editing(editing =>
+    {
+        editing.AllowAdding(false);
+        editing.AllowDeleting(false);
+        editing.AllowUpdating(false);
+        editing.AllowResizing(false);
+        editing.AllowDragging(false);
+    })
+
+    .CurrentView(SchedulerViewType.Month)
+    .CurrentDate(DateTime.Now)
+    .StartDayHour(00)
+    .EndDayHour(23)
+    .Height(600)
+    .TextExpr("Text")
+
+    .StartDateExpr("StartDate")
+    .EndDateExpr("EndDate")
+    .AllDayExpr("AllDay")
+    .DescriptionExpr("Description")
+    .ShowCurrentTimeIndicator(false)
+   // .OnAppointmentDblClick("OnAppointmentClick")
+    .OnAppointmentFormOpening("OnAppointmentFormOpening")
+
+)
+
+<script>
+
+    function OnAppointmentClick(e) {
+        console.log(e.appointmentData.AppointmentId);
+
+        
+        window.location.href = '../Visita/Cadastrar?p=' + e.appointmentData.AppointmentId;
+    }
+    function OnAppointmentFormOpening(e) {
+        console.log(e);
+        //        console.log(link);
+
+        window.location.href = 'Visita/Cadastrar?p=' + e.appointmentData.AppointmentId;
+        e.cancel = true;
+    }
+
+</script>

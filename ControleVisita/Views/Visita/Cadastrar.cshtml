@@ -22,12 +22,28 @@
 
 
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     @Html.LabelFor(a => a.Id)
                     @Html.DevExtreme().TextBoxFor(m => m.Id).ReadOnly(true).Placeholder("Automático")
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(a => a.MotivoVisita)
+                    @(Html.DevExtreme().SelectBoxFor(a=>a.MotivoVisita).NoDataText("Selecine o motivo")
+
+                .DataSource(ds=>ds.WebApi()
+                    .RouteName("selectbox")
+                    .LoadAction("GetMotivoVisita")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                )
+                .DisplayExpr("Motivo")
+                .ValueExpr("Motivo")
+                .SearchMode(DropDownSearchMode.Contains)
+                .SearchEnabled(true)
+                .InputAttr("required",true))
+                </div>
+
+                <div class="form-group col-md-4">
 
                     @Html.LabelFor(a => a.DataVisita)
                     @Html.DevExtreme().DateBoxFor(d => d.DataVisita).Max(DateTime.Now).DisplayFormat("dd/MM/yyyy").InputAttr("required", true)
@@ -122,6 +138,7 @@
                     @Html.LabelFor(a => a.Cliente.Endereco.Cidade)
 
                     @(Html.DevExtreme().SelectBoxFor(a => a.Cliente.Endereco.Cidade).InputAttr("required", true)
+            .DataSourceOptions(op=> op.Paginate(true).PageSize(15))
                 .DataSource(ds => ds.WebApi()
                     .Controller("CidadeApi")
                     .LoadAction("GetCidade")
@@ -133,8 +150,6 @@
                 .ValueExpr("NOME")
                 .SearchEnabled(true)
                 .ID("dxCidade")
-
-
             )
                 </div>
 
@@ -176,33 +191,57 @@
                     @Html.DevExtreme().DateBoxFor(a => a.Agendamento.DataAgendamento).DisplayFormat("dd/MM/yyyy")
                 </div>
 
-                <div class="form-group col-md-4">
-                    @Html.LabelFor(a => a.ValorBem):
-                    @Html.DevExtreme().TextBoxFor(a => a.ValorBemAux).InputAttr("class", "money")
-                </div>
 
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(a => a.Percepcao)
+                    @(Html.DevExtreme().SelectBoxFor(a => a.Percepcao)
+
+                        .DataSource(new string[]
+                        {
+                            "Frio",
+                            "Morno",
+                            "Quente"
+                        })
+                    )
+                </div>
             </div>
 
             <div class="form-row">
-
-                <div class="col-md-6 form-group">
+                <div class="col-md-4 form-group">
 
                     @Html.LabelFor(a => a.BemViewModel.Marca)
-                    @(Html.DevExtreme().SelectBoxFor(a=>a.BemViewModel.Marca)
+                    @(Html.DevExtreme().SelectBoxFor(a=>a.BemViewModel.Marca).ID("cbxMarca")
                     .DataSource(ds=>ds.WebApi().RouteName("selectbox")
                         .LoadAction("GetBems")
                         .LoadParams(new {empresa = @User.Identity.GetEmpresa()})
                         .LoadMode(DataSourceLoadMode.Raw)
                     ).DisplayExpr("Marca")
                     .ValueExpr("Marca")
+                    .OnValueChanged("onCbxMarcaValueChanged")
                     .Placeholder("Selecione a marca"))
 
                 </div>
 
-                <div class="col-md-6 form-group">
-
+                <div class="col-md-4 form-group">
                     @Html.LabelFor(a => a.BemViewModel.Modelo)
-                    @Html.DevExtreme().TextBoxFor(a => a.BemViewModel.Modelo)
+                    @(Html.DevExtreme().SelectBoxFor(a=>a.BemViewModel.Modelo).ID("cbxModelo")
+                    .DataSourceOptions(op => op.Paginate(true).PageSize(15))
+                    .DataSource(ds=>ds.WebApi().RouteName("selectbox")
+                        .LoadAction("GetModelos")
+                        .LoadParams(new {empresa = @User.Identity.GetEmpresa()})
+                        .LoadMode(DataSourceLoadMode.Raw)
+                    ).DisplayExpr("Modelo")
+                    .ValueExpr("Modelo")
+                    .Placeholder("Selecione o Modelo"))
+                    @*@Html.LabelFor(a => a.BemViewModel.Modelo)
+                        @Html.DevExtreme().TextBoxFor(a => a.BemViewModel.Modelo)*@
+                </div>
+
+
+
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(a => a.ValorBem):
+                    @Html.DevExtreme().TextBoxFor(a => a.ValorBemAux).InputAttr("class", "money")
                 </div>
 
             </div>
@@ -223,8 +262,10 @@
     </div>
 }
 
+<br />
+
 <div class="card">
-    <div class="card-header"><h4>Cadastros realizados Hoje</h4></div>
+    <div class="card-header"><h4>Cadastros realizados hoje</h4></div>
     <div class="card-body">
         @Html.Partial("GridVisita")
     </div>
@@ -283,6 +324,14 @@
         $("#dxCidade").dxSelectBox("instance").getDataSource().reload();
     }
 
+    function onCbxMarcaValueChanged(e) {
+
+        $("#BemViewModel_Modelo").val("");
+
+        $("#cbxModelo").dxSelectBox("instance").getDataSource().filter(["Marca", "=", e.value]);
+        $("#cbxModelo").dxSelectBox("instance").getDataSource().reload();
+    }
+
     function onchangeMotivo(e) {
 
 
@@ -293,9 +342,10 @@
             $("#Agendamento_DataAgendamento").prop('required', false);
             $("#HistoricoVisita").prop('required', false);
         }
-        else if (e.value === "COMPARANDO COM A CONCORRÊNCIA") {
-            $("#Agendamento_DataAgendamento").prop('required', true);
-        }
+
+        //else if (e.value === "COMPARANDO COM A CONCORRÊNCIA") {
+        //    $("#Agendamento_DataAgendamento").prop('required', true);
+        //}
 
         else if (e.value === "AVALIANDO PROPOSTA") {
             $("#Agendamento_DataAgendamento").prop('required', true);

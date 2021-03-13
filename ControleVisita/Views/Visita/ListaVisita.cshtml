@@ -36,7 +36,7 @@
                 <div class="form-group col-md-4">
 
                     Data Visita Inicial:
-                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("datainicial").InputAttr("required", "true")
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("DataVisitaInicial")
 
 
                 </div>
@@ -44,7 +44,7 @@
                 <div class="form-group col-md-4">
 
                     Data Visita Final:
-                    @Html.DevExtreme().DateBox().Name("datafinal").Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").InputAttr("required", "true")
+                    @Html.DevExtreme().DateBox().Name("DataVisitaFinal").Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy")
 
                 </div>
 
@@ -54,8 +54,35 @@
 
                 </div>
 
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    Data Reagendamento de:
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("DataReagentamentoInicial")
+                </div>
+                <div class="form-group col-md-4">
+                    Data Reagendamento até:
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("DataReagentamentoFinal")
+                </div>
+
+                <div class="form-group col-md-4">
+                    Responsável:
+                    @(Html.DevExtreme().Lookup().Name("Vendedor").ID("Vendedor")
+                .DataSource(ds=>ds.WebApi()
+                    .RouteName("selectbox")
+                    .LoadAction("GetVendedores")
+                    .LoadParams(new  {empresa= User.Identity.GetEmpresa(),codgrupo = User.Identity.Getcodgrupo() })
+                    .LoadMode(DataSourceLoadMode.Raw)
+                )
+                .DisplayExpr("Nome")
+                .ValueExpr("CodGrupo")
+                .SearchMode(DropDownSearchMode.Contains)
+                .SearchEnabled(true))
+                </div>
+
 
             </div>
+
             <div class="form-row">
                 <div class="form-inline col-md-12">
 
@@ -78,15 +105,15 @@
 </div>
 
 
-<div id="gridVisita" class="row">
+<div id="gridVisita">
     @*<div>@Html.ActionLink("Cadastrar", "Cadastrar", null, new { @class = "btn btn-primary" })</div>*@
     @(Html.DevExtreme().DataGrid<ControleVisita.Models.VisitaModel>()
-        .DataSource(ViewBag.VisitaList as List<ControleVisita.Models.VisitaModel>
+        .DataSource(Model
         )
         .OnRowUpdating("OnRowUpdating")
         .OnRowRemoving("OnRowRemoving")
         .NoDataText("Nenhuma visita cadastrada para período informado")
-        .DataSource(Model)
+      //  .DataSource(Model)
         .LoadPanel(m => m.Enabled(true))
         .RowAlternationEnabled(true)
         .Export(e => e.Enabled(true).AllowExportSelectedData(false))
@@ -104,7 +131,7 @@
                                                              <a href="@Url.Action("Cadastrar", "Visita")?p=<%= data.Id%>" class="dx-icon-edit"></a>
 
                                                           </text>).VisibleIndex(0).Width(50);
-        columns.AddFor(m => m.Id).Visible(true).AllowEditing(false).Width(80).VisibleIndex(0);
+        columns.AddFor(m => m.Id).Visible(false).AllowEditing(false).Width(80).VisibleIndex(0);
         columns.AddFor(m => m.Usuario).GroupIndex(0).VisibleIndex(1);
         columns.AddFor(m => m.DataVisita).DataType(GridColumnDataType.Date).Width(100)
             .Format("dd/MM/yyyy").AllowResizing(true).SortOrder(SortOrder.Desc).VisibleIndex(3);
@@ -115,9 +142,10 @@
         columns.AddFor(m => m.Cliente.Email).Caption("E-mail").Visible(false).VisibleIndex(8);
         columns.AddFor(m => m.VendaRealizadaStr).Caption("Venda Realizada").VisibleIndex(9).Width(100);
         columns.AddFor(m => m.Cliente.Telefone).Caption("Telefone").Visible(false).VisibleIndex(10);
-            columns.AddFor(m => m.Cliente.Endereco.UF).Caption("Estado").Visible(false).VisibleIndex(11);
+        columns.AddFor(m => m.Cliente.Endereco.UF).Caption("Estado").Visible(false).VisibleIndex(11);
         columns.AddFor(m => m.Cliente.Endereco.Cidade).Caption("Cidade").Visible(false).VisibleIndex(12);
         columns.AddFor(m => m.Cliente.Endereco.Logradouro).Caption("Logradouro").Visible(false).VisibleIndex(13);
+
 
             columns.AddFor(m => m.MotivoNaoVenda)
                 .Lookup(l => l.DataSource(w => w.WebApi().Controller("MotivoApi")
@@ -154,6 +182,7 @@
             columns.AddFor(m => m.HistoricoVisita);
 
             columns.AddFor(m => m.Cliente.Atividade).Visible(false);
+            columns.AddFor(m => m.NomeVendedor).Visible(false);
 
         })
     .ShowBorders(true)
@@ -168,116 +197,116 @@
     {
 
 
-    items.AddGroup()
-    .Caption("Dados do Cliente")
-    .Items(g =>
-    {
-    g.AddSimpleFor(m => m.Cliente.NomeCompleto);
-    g.AddSimpleFor(m => m.Cliente.DddCelular).Editor(editor => editor.TextBox().Mask("00"));
-    g.AddSimpleFor(m => m.Cliente.Celular).Editor(editor => editor.TextBox().Mask("00000-0000"));
+        items.AddGroup()
+        .Caption("Dados do Cliente")
+        .Items(g =>
+        {
+            g.AddSimpleFor(m => m.Cliente.NomeCompleto);
+            g.AddSimpleFor(m => m.Cliente.DddCelular).Editor(editor => editor.TextBox().Mask("00"));
+            g.AddSimpleFor(m => m.Cliente.Celular).Editor(editor => editor.TextBox().Mask("00000-0000"));
 
-    g.AddSimpleFor(m => m.Cliente.DDDFone);
-    g.AddSimpleFor(m => m.Cliente.Telefone);
-    g.AddSimpleFor(m => m.Cliente.WhatsApp).ColSpan(4);
+            g.AddSimpleFor(m => m.Cliente.DDDFone);
+            g.AddSimpleFor(m => m.Cliente.Telefone);
+            g.AddSimpleFor(m => m.Cliente.WhatsApp).ColSpan(4);
 
-    g.AddSimpleFor(m => m.Cliente.Endereco.UF)
-    .Editor(editor=>editor.SelectBox().DataSource(ds=>ds.WebApi()
-    .Controller("UFApi")
-    .LoadAction("GetUF")
-    .LoadMode(DataSourceLoadMode.Raw)
-    .CacheRawData(true)
-    .Key("ID"))
-    .DisplayExpr("NOME")
-    .ValueExpr("NOME")
-    .SearchEnabled(true)
-    .OnSelectionChanged("Cidade")
-    // .OnValueChanged("Cidade")
-    .ID("dxUF"));
+            g.AddSimpleFor(m => m.Cliente.Endereco.UF)
+        .Editor(editor=>editor.SelectBox().DataSource(ds=>ds.WebApi()
+        .Controller("UFApi")
+        .LoadAction("GetUF")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .CacheRawData(true)
+        .Key("ID"))
+        .DisplayExpr("NOME")
+        .ValueExpr("NOME")
+        .SearchEnabled(true)
+        .OnSelectionChanged("Cidade")
+        // .OnValueChanged("Cidade")
+        .ID("dxUF"));
 
-    g.AddSimpleFor(m => m.Cliente.Endereco.Cidade)
-    .Editor(editor => editor.Lookup().DataSource(ds => ds.WebApi()
-    .Controller("CidadeApi")
-    .LoadAction("GetCidade")
-    .Key("NOME")
-    .LoadMode(DataSourceLoadMode.Raw)
-    .CacheRawData(true)
-    )
-    .DisplayExpr("NOME")
-    .ValueExpr("NOME")
-    .SearchEnabled(true)
-    .ID("dxCidade"));
+            g.AddSimpleFor(m => m.Cliente.Endereco.Cidade)
+        .Editor(editor => editor.Lookup().DataSource(ds => ds.WebApi()
+        .Controller("CidadeApi")
+        .LoadAction("GetCidade")
+        .Key("NOME")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .CacheRawData(true)
+        )
+        .DisplayExpr("NOME")
+        .ValueExpr("NOME")
+        .SearchEnabled(true)
+        .ID("dxCidade"));
 
-    g.AddSimpleFor(m => m.Cliente.Endereco.Logradouro);
-
-
-
-    });
-
-    items.AddGroup()
-    .Caption("Dados da Visita")
-    .ColCount(1)
-    .ColSpan(2)
-    .Items(g =>
-    {
-    g.AddSimpleFor(m => m.Id).Editor(editor=>editor.TextBox());
-    g.AddSimpleFor(m => m.DataVisita).Editor(editor => editor.DateBox().Max(DateTime.Now));
-    g.AddSimpleFor(m => m.VendaRealizadaStr).Editor(editor=>editor.TextBox());
-    g.AddSimpleFor(m => m.Agendamento.DataAgendamento).Editor(editor => editor.DateBox());
-    g.AddSimpleFor(m => m.MotivoNaoVenda).Editor(editor => editor.SelectBox()
-    .DataSource(ds => ds.WebApi()
-    .Controller("MotivoApi").LoadAction("Get").Key("Motivo")
-    .LoadMode(DataSourceLoadMode.Raw)
-    )
-
-    .ValueExpr("Motivo")
-    .DisplayExpr("Motivo")
-    .OnValueChanged("onchangeMotivo")
-    .ShowClearButton(true)
-    .Placeholder("Selecione o Motivo"))
-    ;
+            g.AddSimpleFor(m => m.Cliente.Endereco.Logradouro);
 
 
-    g.AddSimpleFor(m => m.BemViewModel.Marca)
-    .Editor(editor => editor.SelectBox().DataSource(ds => ds.WebApi().RouteName("selectbox")
-    .LoadAction("GetBems").Key("Marca")
-    .LoadParams(new {empresa = @User.Identity.GetEmpresa()})
-    .LoadMode(DataSourceLoadMode.Raw)
-    ).DisplayExpr("Marca")
-    .ValueExpr("Marca")
 
-    .Placeholder("Selecione o marca"));
+        });
 
-    g.AddSimpleFor(m => m.BemViewModel.Modelo);
-    g.AddSimpleFor(m => m.ValorBem);
+        items.AddGroup()
+        .Caption("Dados da Visita")
+        .ColCount(1)
+        .ColSpan(2)
+        .Items(g =>
+        {
+            g.AddSimpleFor(m => m.Id).Editor(editor=>editor.TextBox());
+            g.AddSimpleFor(m => m.DataVisita).Editor(editor => editor.DateBox().Max(DateTime.Now));
+            g.AddSimpleFor(m => m.VendaRealizadaStr).Editor(editor=>editor.TextBox());
+            g.AddSimpleFor(m => m.Agendamento.DataAgendamento).Editor(editor => editor.DateBox());
+            g.AddSimpleFor(m => m.MotivoNaoVenda).Editor(editor => editor.SelectBox()
+        .DataSource(ds => ds.WebApi()
+        .Controller("MotivoApi").LoadAction("Get").Key("Motivo")
+        .LoadMode(DataSourceLoadMode.Raw)
+        )
+
+        .ValueExpr("Motivo")
+        .DisplayExpr("Motivo")
+        .OnValueChanged("onchangeMotivo")
+        .ShowClearButton(true)
+        .Placeholder("Selecione o Motivo"))
+        ;
 
 
-    g.AddSimpleFor(m => m.HistoricoVisita)
-    .ColSpan(6)
-    .Editor(editor => editor.TextArea().Height(100).Width(300));
+            g.AddSimpleFor(m => m.BemViewModel.Marca)
+        .Editor(editor => editor.SelectBox().DataSource(ds => ds.WebApi().RouteName("selectbox")
+        .LoadAction("GetBems").Key("Marca")
+        .LoadParams(new {empresa = @User.Identity.GetEmpresa()})
+        .LoadMode(DataSourceLoadMode.Raw)
+        ).DisplayExpr("Marca")
+        .ValueExpr("Marca")
 
-    });
+        .Placeholder("Selecione o marca"));
+
+            g.AddSimpleFor(m => m.BemViewModel.Modelo);
+            g.AddSimpleFor(m => m.ValorBem);
+
+
+            g.AddSimpleFor(m => m.HistoricoVisita)
+        .ColSpan(6)
+        .Editor(editor => editor.TextArea().Height(100).Width(300));
+
+        });
     }))
 
     )
     .SortByGroupSummaryInfo(i => i.Add().SummaryItem("count"))
     .Summary(s=>s.TotalItems(items =>
     {
-    items.AddFor(m => m.Id).SummaryType(SummaryType.Count)
-    .DisplayFormat("Total: {0}");
+        items.AddFor(m => m.Id).SummaryType(SummaryType.Count)
+        .DisplayFormat("Total: {0}");
 
 
 
     }))
     .Summary(s=> s.GroupItems(items =>
     {
-    //items.AddFor(m => m.Cliente)
-    //    .SummaryType(SummaryType.Count)
-    //    .DisplayFormat("Total Cadastrado: {0}");
+        //items.AddFor(m => m.Cliente)
+        //    .SummaryType(SummaryType.Count)
+        //    .DisplayFormat("Total Cadastrado: {0}");
 
-    //items.AddFor(m => m.Id)
-    //    .SummaryType(SummaryType.Count)
-    //    .ShowInGroupFooter(true)
-    //    .DisplayFormat("Total: {0}");
+        //items.AddFor(m => m.Id)
+        //    .SummaryType(SummaryType.Count)
+        //    .ShowInGroupFooter(true)
+        //    .DisplayFormat("Total: {0}");
 
     })))
 
@@ -409,7 +438,7 @@
 
     function OnRowRemoving(e) {
 
-      
+
         sendRequest('../api/VisitaApi/?id=' + e.key.Id+'&usuario=@User.Identity.GetUsuario()'+'&empresa=@User.Identity.GetEmpresa()', "DELETE", { key: e.key, values: JSON.stringify(e.newData) });
 
     }

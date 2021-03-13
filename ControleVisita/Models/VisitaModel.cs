@@ -12,6 +12,9 @@ namespace ControleVisita.Models
 
         public PessoaModel Cliente { get; set; } = new PessoaModel();
 
+        [DisplayName("Responsável")]
+        public string NomeVendedor { get; set; }
+
         [Required(ErrorMessage = "Informe a data da visita")]
         [DataType(DataType.Date)]
         [DisplayName("Data visita")]
@@ -22,6 +25,9 @@ namespace ControleVisita.Models
 
         //public EnderecoModel Endereco { get; set; } = new EnderecoModel();
 
+        [Required(ErrorMessage = "Informe o motivo da visita")]
+        [DisplayName("Motivo da Visita")]
+        public string MotivoVisita { get; set; }
 
 
         [DataType(DataType.Currency)]
@@ -43,6 +49,8 @@ namespace ControleVisita.Models
         [DisplayName("Por que não vendeu?")]
         public string MotivoNaoVenda { get; set; }
 
+        public int IdMotivo { get; set; }
+
         public AgendaModel Agendamento { get; set; } = new AgendaModel();
 
         [DisplayName("Usuário")]
@@ -54,6 +62,8 @@ namespace ControleVisita.Models
 
         public DateTime DataInclusao { get; set; }
 
+        [DisplayName("Percepção")]
+        public string Percepcao { get; set; }
     }
 
 

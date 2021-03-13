@@ -56,9 +56,10 @@ namespace ControleVisita.Models
             var cookie = HttpContext.Current.Request.Cookies[nomeCookie] ?? new HttpCookie(nomeCookie)
             {
 
-               Value = "CMC+6578+RUBEN.REIS+25",
-               //  Value = "CMC+9+LEANDRO.AMARAL+11",
+               //Value = "CMC+6578+RUBEN.REIS+25",
+                 Value = "CMC+9+LEANDRO.AMARAL+11",
                // Value = "CMC+6516+SILVANA.SILVA+6",
+               // Value = "CMC+6573+JOACAZ.MARTINS+25",
 
                 Expires = DateTime.Now.AddMinutes(20),
                 HttpOnly = true

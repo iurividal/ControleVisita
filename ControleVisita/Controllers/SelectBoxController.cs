@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using ControleVisita.Models;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 
@@ -26,9 +28,29 @@ namespace ControleVisita.Controllers
                 .Where(a => a.Empresa == empresa).OrderBy(a => a.Marca);
         }
 
+
+        public HttpResponseMessage GetModelos(string empresa, DataSourceLoadOptions loadOptions)
+        {
+            var response = BemViewModel.GetModelo(empresa);
+            return Request.CreateResponse(DataSourceLoader.Load(response, loadOptions));
+        }
+
+
+        public HttpResponseMessage GetMotivoVisita(DataSourceLoadOptions loadOptions)
+        {
+            return Request.CreateResponse(DataSourceLoader.Load(MotivoViewModel.GetMotivoVisita(), loadOptions));
+        }
+
+        public HttpResponseMessage GetVendedores(string empresa, string codgrupo, DataSourceLoadOptions loadOptions)
+        {
+            return Request.CreateResponse(DataSourceLoader.Load(VendedorModel.GetVendedor(empresa, codgrupo), loadOptions));
+        }
+
+
         // GET api/<controller>/5
         public IEnumerable<ProfissaoViewModel> GetAtividades()
         {
+
             return ProfissaoModel.GetProfissao();
         }
 

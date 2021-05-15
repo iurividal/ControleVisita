@@ -13,10 +13,10 @@ namespace ControleVisita.Models
 {
     public class VisitaViewModel
     {
-        public static List<VisitaModel> Get(int codgrupo)
+        public static List<VisitaModel> Get(int codgrupo, string empresa)
         {
             //new LoginData().GetUser().Empresa
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
             {
                 // var user = (LoginModel)HttpContext.Current.Session["USERMODEL"];
 
@@ -76,6 +76,7 @@ namespace ControleVisita.Models
                     {
                         Id = t.CODVISITA,
                         CodGrupo = t.CODGRUPO.ToString(),
+                        IdPessoa = Convert.ToInt32(t.IDPESSOA),
                         Cliente = new PessoaModel
                         {
                             NomeCompleto = t.VISITADO,
@@ -86,6 +87,7 @@ namespace ControleVisita.Models
                             Celular = t.CELULAR,
                             WhatsApp = t.WHATSAPP,
                             Atividade = t.ATIVIDADE,
+                            IdPessoa = Convert.ToInt32(t.IDPESSOA),
 
 
                             Endereco = new EnderecoModel
@@ -120,7 +122,7 @@ namespace ControleVisita.Models
                         DataInclusao = t.DATAINCLUSAO.GetValueOrDefault(),
                         MotivoVisita = t.MOTIVOVISITA,
                         Percepcao = t.PERCEPCAO
-                        
+
 
 
                     }).ToList();
@@ -172,10 +174,10 @@ namespace ControleVisita.Models
                                                     GRUPOS.NOME,
                                                     GRUPOS.TIPO_GRUPO,
                                                     -- G.SEQREVENDA,
-                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 1, 3) COORDENADOR_RESPONSAVEL,
-                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 4, 3) SUPERVISOR_RESPONSAVEL,
-                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 11, 3) GERENTE_RESPONSAVEL,
-                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 6, 3) ADM_RESPONSAVEL,
+                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 1, decode(USER,'CNMF',1,'CNV',2, 3)) COORDENADOR_RESPONSAVEL,
+                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 4, decode(USER,'CNMF',1,'CNV',2, 3)) SUPERVISOR_RESPONSAVEL,
+                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 11, decode(USER,'CNMF',1,'CNV',2, 3)) GERENTE_RESPONSAVEL,
+                                                    VORTICE.f_responsavel_cod(G.SEQREVENDA, 6, decode(USER,'CNMF',1,'CNV',2, 3)) ADM_RESPONSAVEL,
                                                     TB.cod_grupo COD_GRUPOOUTRO
                            
                                       from CN_VISITAS V
@@ -291,10 +293,10 @@ namespace ControleVisita.Models
         }
 
 
-        public static List<VisitaModel> Get(decimal codgrupo, DateTime? dtaini, DateTime? dtafim)
+        public static List<VisitaModel> Get(decimal codgrupo, string empresa, DateTime? dtaini, DateTime? dtafim)
         {
             //new LoginData().GetUser().Empresa
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
             {
                 //   var user = (LoginModel)HttpContext.Current.Session["USERMODEL"];
 
@@ -416,82 +418,81 @@ namespace ControleVisita.Models
         public static void AddOrUpdate(VisitaModel model, LoginModel user)
         {
 
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(user.Empresa)))
             {
                 try
                 {
 
-
                     var entity = new CNVISITA();
 
-                    var visita = db.CNVISITAs.FirstOrDefault(a => a.CODVISITA == model.Id);
+                    //var visita = db.CNVISITAs.FirstOrDefault(a => a.CODVISITA == model.Id);
 
-                    if (visita == null)
-                    {
+                    //if (visita == null)
+                    //{
 
+                    entity.CODVISITA = db.CNVISITAs.Max(a => a.CODVISITA) + 1;
+                    entity.VISITADO = model.Cliente.NomeCompleto;
+                    entity.VENDEU = !string.IsNullOrEmpty(model.MotivoNaoVenda) ? "0" : "1";
+                    entity.DATAREAGENDAMENTO = model.Agendamento.DataAgendamento;
+                    entity.ENDERECO = model.Cliente.Endereco.Logradouro;
+                    entity.CIDADE = model.Cliente.Endereco.Cidade;
+                    entity.UF = model.Cliente.Endereco.UF;
+                    entity.OBSERVACOES = model.HistoricoVisita;
+                    entity.FONE = model.Cliente.Telefone;
+                    entity.DDDFONE = model.Cliente.DDDFone;
+                    entity.DDDCELULAR = model.Cliente.DddCelular;
+                    entity.CELULAR = model.Cliente.Celular;
+                    entity.WHATSAPP = model.Cliente.WhatsApp.OnlyNumbers();
+                    entity.CODGRUPO = Convert.ToInt32(user.CodGrupo);
+                    entity.VALORBEM = model.ValorBem;
+                    entity.MOTIVONAOVENDA = string.IsNullOrEmpty(model.MotivoNaoVenda) ? "" : model.MotivoNaoVenda.ToUpper();
+                    entity.EMAIL = model.Cliente.Email;
+                    entity.DATAVISITA = model.DataVisita.GetValueOrDefault();
+                    entity.USUARIOATUALIZACAO = user.Login.Replace("%2E", ".");
+                    entity.REAGENDAMENTOREALIZADO = model.Agendamento.DataAgendamento == null ? true : false;
+                    entity.DATAATUALIZACAO = DateTime.Now.ToString("dd/MM/yyyy");
+                    entity.MARCABEM = model.BemViewModel.Marca;
+                    entity.MODELOBEM = model.BemViewModel.Modelo;
+                    entity.DATAINCLUSAO = DateTime.Now;
+                    entity.USUARIOINCLUSAO = user.Login.Replace("%2E", ".");
+                    entity.ATIVIDADE = model.Cliente.Atividade;
+                    entity.MOTIVOVISITA = model.MotivoVisita;
+                    entity.PERCEPCAO = model.Percepcao;
+                    entity.IDPESSOA = model.Cliente.IdPessoa;
+                    db.CNVISITAs.InsertOnSubmit(entity);
 
-                        entity.CODVISITA = db.CNVISITAs.Max(a => a.CODVISITA) + 1;
-                        entity.VISITADO = model.Cliente.NomeCompleto;
-                        entity.VENDEU = !string.IsNullOrEmpty(model.MotivoNaoVenda) ? "0" : "1";
-                        entity.DATAREAGENDAMENTO = model.Agendamento.DataAgendamento;
-                        entity.ENDERECO = model.Cliente.Endereco.Logradouro;
-                        entity.CIDADE = model.Cliente.Endereco.Cidade;
-                        entity.UF = model.Cliente.Endereco.UF;
-                        entity.OBSERVACOES = model.HistoricoVisita;
-                        entity.FONE = model.Cliente.Telefone;
-                        entity.DDDFONE = model.Cliente.DDDFone;
-                        entity.DDDCELULAR = model.Cliente.DddCelular;
-                        entity.CELULAR = model.Cliente.Celular;
-                        entity.WHATSAPP = model.Cliente.WhatsApp.OnlyNumbers();
-                        entity.CODGRUPO = Convert.ToInt32(user.CodGrupo);
-                        entity.VALORBEM = model.ValorBem;
-                        entity.MOTIVONAOVENDA = string.IsNullOrEmpty(model.MotivoNaoVenda) ? "" : model.MotivoNaoVenda.ToUpper();
-                        entity.EMAIL = model.Cliente.Email;
-                        entity.DATAVISITA = model.DataVisita.GetValueOrDefault();
-                        entity.USUARIOATUALIZACAO = user.Login.Replace("%2E", ".");
-                        entity.REAGENDAMENTOREALIZADO = model.Agendamento.DataAgendamento == null ? true : false;
-                        entity.DATAATUALIZACAO = DateTime.Now.ToString("dd/MM/yyyy");
-                        entity.MARCABEM = model.BemViewModel.Marca;
-                        entity.MODELOBEM = model.BemViewModel.Modelo;
-                        entity.DATAINCLUSAO = DateTime.Now;
-                        entity.USUARIOINCLUSAO = user.Login.Replace("%2E", ".");
-                        entity.ATIVIDADE = model.Cliente.Atividade;
-                        entity.MOTIVOVISITA = model.MotivoVisita;
-                        entity.PERCEPCAO = model.Percepcao;
-                        db.CNVISITAs.InsertOnSubmit(entity);
+                    db.SubmitChanges();
+                    //}
+                    //else
+                    //{
 
-                        db.SubmitChanges();
-                    }
-                    else
-                    {
-
-                        visita.VISITADO = model.Cliente.NomeCompleto;
-                        visita.VENDEU = !string.IsNullOrEmpty(model.MotivoNaoVenda) ? "0" : "1";
-                        visita.DATAREAGENDAMENTO = model.Agendamento.DataAgendamento;
-                        visita.ENDERECO = model.Cliente.Endereco.Logradouro;
-                        visita.CIDADE = model.Cliente.Endereco.Cidade;
-                        visita.UF = model.Cliente.Endereco.UF;
-                        visita.OBSERVACOES = model.HistoricoVisita;
-                        visita.DDDFONE = model.Cliente.DDDFone;
-                        visita.FONE = model.Cliente.Telefone;
-                        visita.DDDCELULAR = model.Cliente.DddCelular;
-                        visita.CELULAR = model.Cliente.Celular.OnlyNumbers();
-                        visita.WHATSAPP = model.Cliente.WhatsApp.OnlyNumbers();
-                        //visita.CODGRUPO = Convert.ToInt32(user.CodGrupo);
-                        visita.VALORBEM = model.ValorBem;
-                        visita.MOTIVONAOVENDA = string.IsNullOrEmpty(model.MotivoNaoVenda) ? "" : model.MotivoNaoVenda.ToUpper();
-                        visita.EMAIL = model.Cliente.Email;
-                        visita.DATAVISITA = model.DataVisita.GetValueOrDefault();
-                        // visita.USUARIOATUALIZACAO = user.Login.Replace("%2E", ".");
-                        visita.REAGENDAMENTOREALIZADO = model.Agendamento.DataAgendamento == null ? true : false;
-                        visita.DATAATUALIZACAO = DateTime.Now.ToString("dd/MM/yyyy");
-                        visita.MODELOBEM = model.BemViewModel.Modelo;
-                        visita.MARCABEM = model.BemViewModel.Marca;
-                        visita.ATIVIDADE = model.Cliente.Atividade;
-                        visita.MOTIVOVISITA = model.MotivoVisita;
-                        visita.PERCEPCAO = model.Percepcao;
-                        db.SubmitChanges();
-                    }
+                    //    visita.VISITADO = model.Cliente.NomeCompleto;
+                    //    visita.VENDEU = !string.IsNullOrEmpty(model.MotivoNaoVenda) ? "0" : "1";
+                    //    visita.DATAREAGENDAMENTO = model.Agendamento.DataAgendamento;
+                    //    visita.ENDERECO = model.Cliente.Endereco.Logradouro;
+                    //    visita.CIDADE = model.Cliente.Endereco.Cidade;
+                    //    visita.UF = model.Cliente.Endereco.UF;
+                    //    visita.OBSERVACOES = model.HistoricoVisita;
+                    //    visita.DDDFONE = model.Cliente.DDDFone;
+                    //    visita.FONE = model.Cliente.Telefone;
+                    //    visita.DDDCELULAR = model.Cliente.DddCelular;
+                    //    visita.CELULAR = model.Cliente.Celular.OnlyNumbers();
+                    //    visita.WHATSAPP = model.Cliente.WhatsApp.OnlyNumbers();
+                    //    //visita.CODGRUPO = Convert.ToInt32(user.CodGrupo);
+                    //    visita.VALORBEM = model.ValorBem;
+                    //    visita.MOTIVONAOVENDA = string.IsNullOrEmpty(model.MotivoNaoVenda) ? "" : model.MotivoNaoVenda.ToUpper();
+                    //    visita.EMAIL = model.Cliente.Email;
+                    //    visita.DATAVISITA = model.DataVisita.GetValueOrDefault();
+                    //    // visita.USUARIOATUALIZACAO = user.Login.Replace("%2E", ".");
+                    //    visita.REAGENDAMENTOREALIZADO = model.Agendamento.DataAgendamento == null ? true : false;
+                    //    visita.DATAATUALIZACAO = DateTime.Now.ToString("dd/MM/yyyy");
+                    //    visita.MODELOBEM = model.BemViewModel.Modelo;
+                    //    visita.MARCABEM = model.BemViewModel.Marca;
+                    //    visita.ATIVIDADE = model.Cliente.Atividade;
+                    //    visita.MOTIVOVISITA = model.MotivoVisita;
+                    //    visita.PERCEPCAO = model.Percepcao;
+                    //    db.SubmitChanges();
+                    //}
 
 
                 }

@@ -16,9 +16,13 @@ namespace ControleVisita.Models
         [DisplayName("Id")]
         public int IdPessoa { get; set; }
 
-        [Required(ErrorMessage = "Informe o nome do cliente")]
-        [DisplayName("Nome")]
+        [MinLength(10, ErrorMessage = "Informe o nome completo")]
+        [Required(ErrorMessage = "Informe o nome razão completo do cliente")]
+        [DisplayName("Nome Razão")]
         public string NomeCompleto { get; set; }
+
+        [DisplayName("Sobrenome")]
+        public string Sobrenome { get; set; }
 
         [DisplayName("Tipo de Pessoa")]
         public TipoPessoa TipoPessoa { get; set; }
@@ -35,12 +39,14 @@ namespace ControleVisita.Models
 
         private string _dddFoneFields = "";
         [DisplayName("DDD Tel.")]
-        public string DDDFone { get => _dddFoneFields; set => _dddFoneFields = value; }
+        public string DDDFone { get => !string.IsNullOrEmpty(Telefone) ? Telefone.Substring(0, 2) : ""; set => _dddFoneFields = value; }
 
-        [Required(ErrorMessage = "Informe o ddd celular")]
+
+        private string _dddCelularFields = "";
         [DisplayName("DDD Cel.")]
-        public string DddCelular { get; set; } = "";
+        public string DddCelular { get => !string.IsNullOrEmpty(Celular) ? Celular.Substring(0, 2) : ""; set => _dddCelularFields = value; }
 
+      
         [Required(ErrorMessage = "Informe o número do celular")]
         [DisplayName("Celular")]
         public string Celular { get; set; } = "";
@@ -52,7 +58,7 @@ namespace ControleVisita.Models
         public string NroCelularCompleto => DddCelular + "" + Celular;
 
         [DisplayName("Data de Nasc.")]
-        public DateTime DataNascimento { get; set; }
+        public DateTime? DataNascimento { get; set; }
 
         [Required(ErrorMessage = "O E-mail campo é obrigatório")]
         [DataType(DataType.EmailAddress, ErrorMessage = "informe um e-mail valído")]

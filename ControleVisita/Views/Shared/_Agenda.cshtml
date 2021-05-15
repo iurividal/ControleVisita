@@ -11,6 +11,7 @@
         .DeleteAction(false)
         .UpdateAction(false)
         .InsertAction(false)
+        .OnBeforeSend("OnBeforeSend")
     )
     .TimeZone("E. South America Standard Time")
     .DateSerializationFormat("yyyy-MM-ddTHH:mm:ssZ")
@@ -22,6 +23,17 @@
       SchedulerViewType.Month,
       SchedulerViewType.Agenda,
   })
+  .Resources(rs =>
+  {
+      rs.Add().DataSource(ds => ds.WebApi()
+      
+      .Controller("agendaResources")
+      .LoadMethod("GET"))
+      .ColorExpr("Color")
+      .ValueExpr("IdPercepcao")
+      .FieldExpr("IdPercepcao")
+      ;
+  })
     .Editing(editing =>
     {
         editing.AllowAdding(false);
@@ -30,6 +42,7 @@
         editing.AllowResizing(false);
         editing.AllowDragging(false);
     })
+    
 
     .CurrentView(SchedulerViewType.Month)
     .CurrentDate(DateTime.Now)
@@ -43,17 +56,22 @@
     .AllDayExpr("AllDay")
     .DescriptionExpr("Description")
     .ShowCurrentTimeIndicator(false)
-   // .OnAppointmentDblClick("OnAppointmentClick")
+    // .OnAppointmentDblClick("OnAppointmentClick")
     .OnAppointmentFormOpening("OnAppointmentFormOpening")
+    
 
 )
 
 <script>
 
+    function OnBeforeSend(r,s) {
+        s.header = {};
+    }
+
     function OnAppointmentClick(e) {
         console.log(e.appointmentData.AppointmentId);
 
-        
+
         window.location.href = '../Visita/Cadastrar?p=' + e.appointmentData.AppointmentId;
     }
     function OnAppointmentFormOpening(e) {

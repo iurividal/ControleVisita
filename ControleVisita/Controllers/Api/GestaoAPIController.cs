@@ -20,7 +20,7 @@ namespace ControleVisita.Controllers
         {
 
             var user = (ClaimsIdentity)User.Identity;
-            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(), DateTime.Now.AddMonths(-2), DateTime.Now).Where(a => !a.IsVendaRealizada).ToList());
+            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(),user.GetEmpresa(), DateTime.Now.AddMonths(-2), DateTime.Now).Where(a => !a.IsVendaRealizada).ToList());
 
 
             var lista = response

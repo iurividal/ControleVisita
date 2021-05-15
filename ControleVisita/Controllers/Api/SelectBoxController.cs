@@ -47,6 +47,13 @@ namespace ControleVisita.Controllers
         }
 
 
+        public HttpResponseMessage GetTipoPessoa(DataSourceLoadOptions loadOptions)
+        {
+            return Request.CreateResponse(DataSourceLoader.Load(Models.ClienteData.GetTypePessoa(), loadOptions));
+        }
+
+
+
         // GET api/<controller>/5
         public IEnumerable<ProfissaoViewModel> GetAtividades()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ControleVisita.Models
@@ -16,5 +17,7 @@ namespace ControleVisita.Models
         public bool IsConcluido { get; set; }
 
         public string Texto { get; set; }
+
+       
     }
 }

@@ -37,7 +37,7 @@ namespace ControleVisita.Controllers
 
             var user = (ClaimsIdentity)User.Identity;
 
-            var response = VendasChartModel.GetVendaPeriodo(user.Getcodgrupo(), datainicial, datafinal).ToList();
+            var response = VendasChartModel.GetVendaPeriodo(user.Getcodgrupo(),user.GetEmpresa(), datainicial, datafinal).ToList();
 
             return View(response);
         }
@@ -56,7 +56,7 @@ namespace ControleVisita.Controllers
 
             var user = (ClaimsIdentity)User.Identity;
 
-            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(), datainicial, datafinal).Where(a => !a.IsVendaRealizada).ToList());
+            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(),user.GetEmpresa(), datainicial, datafinal).Where(a => !a.IsVendaRealizada).ToList());
             ViewBag.TituloGrafico =
                 $"Motivos não venda {datainicial.Date.ToString("dd/MM/yyyy")} até {datafinal.Date.ToString("dd/MM/yyyy")}";
 
@@ -87,7 +87,7 @@ namespace ControleVisita.Controllers
         {
 
             var user = (ClaimsIdentity)User.Identity;
-            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(), DateTime.Now.AddMonths(-1), DateTime.Now).Where(a => !a.IsVendaRealizada).ToList());
+            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(),user.GetEmpresa(), DateTime.Now.AddMonths(-1), DateTime.Now).Where(a => !a.IsVendaRealizada).ToList());
 
 
             var lista = response
@@ -113,7 +113,7 @@ namespace ControleVisita.Controllers
                 return new List<VisitaModel>();
 
             var user = (ClaimsIdentity)User.Identity;
-            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(), visitaModel.DataVisita, visitaModel.DataVisitaFinal)
+            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(),user.GetEmpresa(), visitaModel.DataVisita, visitaModel.DataVisitaFinal)
                 .Where(a => a.IsVendaRealizada).ToList());
 
             return response;
@@ -123,7 +123,7 @@ namespace ControleVisita.Controllers
         {
 
             var user = (ClaimsIdentity)User.Identity;
-            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(), DateTime.Now.AddMonths(-1), DateTime.Now).Where(a => a.IsVendaRealizada).ToList());
+            var response = await Task.FromResult(VisitaViewModel.Get(user.Getcodgrupo(),user.GetEmpresa(), DateTime.Now.AddMonths(-1), DateTime.Now).Where(a => a.IsVendaRealizada).ToList());
 
 
             var lista = response

@@ -26,7 +26,7 @@ namespace ControleVisita.Controllers
         {
 
             var response = VisitaViewModel
-                .Get(User.Identity.Getcodgrupo(), DateTime.Now.Date.Date.FirstDayOfMonth(), DateTime.Now.Date.LastDayOfMonth())
+                .Get(User.Identity.Getcodgrupo(), empresa, DateTime.Now.Date.Date.FirstDayOfMonth(), DateTime.Now.Date.LastDayOfMonth())
                 .Where(a => a.Usuario == usuario && a.DataInclusao.Date == DateTime.Now.Date)
                 .ToList().OrderByDescending(a => a.DataVisita);
 

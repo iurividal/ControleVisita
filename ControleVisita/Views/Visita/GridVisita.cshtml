@@ -19,7 +19,7 @@
             .LoadAction("Get")
             .LoadParams(new{usuario = @User.Identity.GetUsuario(),empresa=User.Identity.GetEmpresa()})
             .LoadMode(DataSourceLoadMode.Raw)
-            .DeleteAction("DeleteOrder").Key("Id")
+            .DeleteAction("Delete").Key("Id")
           
         )
 

@@ -1,11 +1,5 @@
-﻿@using ControleVisita.Models
-@model ControleVisita.Models.PessoaModel
-@{
-    ViewBag.Title = "Cadastrar";
-}
+﻿@model ControleVisita.Models.PessoaModel
 
-
-<h4>Adicionar Cliente</h4>
 <hr />
 
 @using (Html.BeginForm("Cadastrar", "Clientes", FormMethod.Post))
@@ -17,8 +11,16 @@
 
         <div class="form-group col-md-6">
 
-            @Html.LabelFor(model => model.TipoPessoa)*
-            @Html.DropDownListFor(model => model.TipoPessoa, new SelectList(ViewBag.ListTipoPessoa, "Value", "Text", "1"), new { @class = "form-control" })
+            @Html.LabelFor(model => model.TipoPessoa)
+            @(Html.DevExtreme().SelectBoxFor(a=>a.TipoPessoa).ID("cbxtipopessoa")
+                    .DataSource(ds=>ds.WebApi().RouteName("selectbox")
+                        .LoadAction("GetTipoPessoa")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                    ).DisplayExpr("Value")
+                    .ValueExpr("Key")
+                    .Placeholder("Selecione")                   
+
+                    )
 
         </div>
 
@@ -29,10 +31,9 @@
     </div>
 
     <div class="form-row">
-        <div class="form-group col-md-8">
-            @Html.LabelFor(a => a.NomeCompleto)*
-            @Html.TextBoxFor(a => a.NomeCompleto, new { @class = "form-control", minlength = 10 })
-            @Html.ValidationMessageFor(a => a.NomeCompleto)
+        <div class="form-group col-md-6">
+            @Html.LabelFor(a => a.NomeCompleto)
+            @Html.TextBoxFor(a => a.NomeCompleto, new { @class = "form-control" })
         </div>
 
         <div class="form-group col-md-4">
@@ -40,26 +41,35 @@
             @Html.TextBoxFor(a => a.Email, new { @class = "form-control" })
         </div>
 
+        <div class="form-group col-md-2">
+            @Html.LabelFor(a => a.DataNascimento)
+            @Html.DevExtreme().DateBoxFor(a => a.DataNascimento)
+        </div>
+
     </div>
 
 
     <div class="form-row">
+        <div class="form-group col-2">
+            @Html.LabelFor(a => a.DDDFone)
+            @Html.TextBoxFor(a => a.DDDFone, new { @class = "form-control" })
+        </div>
 
         <div class="form-group col-4">
             @Html.LabelFor(a => a.Telefone)
             @Html.TextBoxFor(a => a.Telefone, new { @class = "form-control" })
+
         </div>
 
+
+        <div class="form-group col-2">
+            @Html.LabelFor(a => a.DddCelular)
+            @Html.TextBoxFor(a => a.DddCelular, new { @class = "form-control" })
+        </div>
         <div class="form-group col-4">
-            @Html.LabelFor(a => a.Celular)*
+            @Html.LabelFor(a => a.Celular)
             @Html.TextBoxFor(a => a.Celular, new { @class = "form-control" })
         </div>
-
-        <div class="form-group col-4">
-            @Html.LabelFor(a => a.WhatsApp)
-            @Html.TextBoxFor(a => a.WhatsApp, new { @class = "form-control" })
-        </div>
-
     </div>
 
     <div class="form-row">
@@ -71,7 +81,7 @@
 
         <div class="form-group col-md-3">
 
-            @Html.LabelFor(a => a.Endereco.UF)*
+            @Html.LabelFor(a => a.Endereco.UF)
 
             @(Html.DevExtreme().SelectBoxFor(a => a.Endereco.UF).InputAttr("required", true)
             .DataSource(ds => ds.WebApi()
@@ -94,7 +104,7 @@
 
         <div class="form-group col-md-3">
 
-            @Html.LabelFor(a => a.Endereco.Cidade)*
+            @Html.LabelFor(a => a.Endereco.Cidade)
 
             @(Html.DevExtreme().SelectBoxFor(a => a.Endereco.Cidade).InputAttr("required", true)
             .DataSourceOptions(op=> op.Paginate(true).PageSize(15))
@@ -149,10 +159,12 @@
 
 
         $('.money').mask('000.000.000.000.000,00', { reverse: true });
-        $('#Celular').mask('(00) 00000-0000');
-        $('#WhatsApp').mask('+55 (00) 00000-0000');
-        $('#Endereco_Cep').mask('00000-000');
 
+        $("#TipoPessoa").change(function () {
+
+            console.log('...');
+
+        });
     });
 
     function Cidade(e) {
@@ -161,7 +173,8 @@
 
         $("#dxCidade").dxSelectBox("instance").getDataSource().filter(["ESTADO", "=", e.value]);
         $("#dxCidade").dxSelectBox("instance").getDataSource().reload();
-    }
+    };
+
+
 
 </script>
-

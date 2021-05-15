@@ -40,12 +40,12 @@ namespace ControleVisita.Controllers
 
 
 
-
         [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult Cadastrar(VisitaModel model)
         {
 
+            model.Cliente = ClienteData.Get(model.IdPessoa).Result;
 
             if (ModelState.IsValid)
             {

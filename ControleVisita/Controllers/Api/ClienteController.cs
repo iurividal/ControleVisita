@@ -18,6 +18,7 @@ namespace ControleVisita.Controllers
         //    return await Models.ClienteData.Get();
         //}
 
+        [Route("api/clientes")]
         [HttpGet]
         public async Task<HttpResponseMessage> Get(DataSourceLoadOptions loadOptions)
         {
@@ -34,7 +35,7 @@ namespace ControleVisita.Controllers
         }
 
         // POST api/<controller>
-        public void Post([FromBody]string value)
+        public void Post([FromBody] string value)
         {
         }
 
@@ -59,7 +60,7 @@ namespace ControleVisita.Controllers
             if (!ModelState.IsValid)
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Falha");
 
-            await ClienteData.Update(cliente);
+            await ClienteData.AddOrUpdate(cliente);
 
             return Request.CreateResponse(HttpStatusCode.OK);
 

@@ -12,9 +12,13 @@ namespace ControleVisita.Controllers
             return View(ClienteData.Get());
         }
 
-        public ActionResult Cadastrar()
+        public ActionResult Cadastrar(string returnUrl)
         {
+
             ViewBag.ListTipoPessoa = Models.ClienteData.GetTipoPessoa();
+
+            TempData["ReturnUrl"] = returnUrl;
+
 
             var model = new PessoaModel();
 
@@ -28,12 +32,18 @@ namespace ControleVisita.Controllers
 
             if (ModelState.IsValid)
             {
-                ClienteData.AddOrUpdateCliente(model);
+                ClienteData.AddOrUpdate(model).Wait();
 
-                return RedirectToAction("Index");
+                if (TempData["ReturnUrl"] != null)
+                    return Redirect(TempData["ReturnUrl"].ToString());
+
+
+                ViewBag.Msg = "Cadastro com Sucesso";
             }
 
             ViewBag.ListTipoPessoa = Models.ClienteData.GetTipoPessoa();
+
+            ViewBag.Msg = "Falha, não foi possível cadastrar o cliente";
 
             return View(model);
 

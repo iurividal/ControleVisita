@@ -20,10 +20,31 @@ namespace ControleVisita.Models
 
                 result.ToList().ForEach(a =>
                 {
-                    var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<PessoaModel>(a.DADOS);
-                    obj.IdPessoa = Convert.ToInt32(a.IDPESSOA);
-                    responseList.Add(obj);
+                    //  var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<PessoaModel>(a.DADOS);
 
+                    responseList.Add(new PessoaModel
+                    {
+                        NomeCompleto = a.NOMECOMPLETO,
+                        Atividade = a.ATIVIDADE,
+                        DataNascimento = a.DATANASCIMENTO,
+                        DddCelular = a.DDDCELULAR,
+                        Celular = a.CELULAR,
+                        DDDFone = a.DDDFONE,
+                        Telefone = a.TELEFONE,
+                        Documento = a.DOCUMENTO,
+                        TipoPessoa = a.TIPOPESSOA == "F" ? Enum.TipoPessoa.Fisica : Enum.TipoPessoa.Juridica,
+                        Email = a.EMAIL,
+                        WhatsApp = a.WHATSAPP,
+                        Endereco = new EnderecoModel
+                        {
+                            Cep = a.CEP,
+                            Logradouro = a.LOGRADOURO,
+                            Cidade = a.CIDADE,
+                            UF = a.UF
+                        },
+                        IdPessoa = Convert.ToInt32(a.IDPESSOA),
+                        Informacao = a.INFORMACAO
+                    });
                 });
 
                 return responseList;
@@ -35,16 +56,38 @@ namespace ControleVisita.Models
         {
             using (var db = new OracleDataContext())
             {
-                var result = await Task.FromResult(db.CNVISITAPESSOAs.First(a => a.IDPESSOA == id));
+                var a = await Task.FromResult(db.CNVISITAPESSOAs.First(b => b.IDPESSOA == id));
 
-                var pessoa = Newtonsoft.Json.JsonConvert.DeserializeObject<PessoaModel>(result.DADOS);
-                pessoa.IdPessoa = id;
+                var pessoa = new PessoaModel
+                {
+                    NomeCompleto = a.NOMECOMPLETO,
+                    Atividade = a.ATIVIDADE,
+                    DataNascimento = a.DATANASCIMENTO,
+                    DddCelular = a.DDDCELULAR,
+                    Celular = a.CELULAR,
+                    DDDFone = a.DDDFONE,
+                    Telefone = a.TELEFONE,
+                    Documento = a.DOCUMENTO,
+                    TipoPessoa = a.TIPOPESSOA == "F" ? Enum.TipoPessoa.Fisica : Enum.TipoPessoa.Juridica,
+                    Email = a.EMAIL,
+                    WhatsApp = a.WHATSAPP,
+                    Endereco = new EnderecoModel
+                    {
+                        Cep = a.CEP,
+                        Logradouro = a.LOGRADOURO,
+                        Cidade = a.CIDADE,
+                        UF = a.UF
+                    },
+                    IdPessoa = Convert.ToInt32(a.IDPESSOA),
+                    Informacao = a.INFORMACAO
+                };
+
                 return pessoa;
             }
 
         }
 
-        public static async Task Update(PessoaModel model)
+        public static async Task AddOrUpdate(PessoaModel model)
         {
             using (var db = new OracleDataContext())
             {
@@ -57,10 +100,50 @@ namespace ControleVisita.Models
                 {
                     result.ToList().ForEach(item =>
                     {
-                        item.DADOS = dados;
+                        item.NOMECOMPLETO = model.NomeCompleto;
+                        item.DDDFONE = model.DDDFone;
+                        item.TELEFONE = model.Telefone;
+                        item.LOGRADOURO = model.Endereco.Logradouro;
+                        item.CIDADE = model.Endereco.Cidade;
+                        item.DATANASCIMENTO = model.DataNascimento;
+                        item.DOCUMENTO = model.Documento;
+                        item.EMAIL = model.Email;
+                        item.CEP = model.Endereco.Cep;
+                        item.ATIVIDADE = model.Atividade;
+                        item.INFORMACAO = model.Informacao;
+
                     });
 
                     db.SubmitChanges();
+                }
+                else
+                {
+                    CNVISITAPESSOA cNVISITAPESSOA = new CNVISITAPESSOA
+                    {
+                        NOMECOMPLETO = model.NomeCompleto,
+                        DOCUMENTO = model.Documento,
+                        TIPOPESSOA = model.TipoPessoa.ToString(),
+                        DDDFONE = model.DDDFone,
+                        TELEFONE = model.Telefone,
+                        DDDCELULAR = model.DDDFone,
+                        CELULAR = model.Celular,
+                        WHATSAPP = model.WhatsApp,
+                        DATANASCIMENTO = model.DataNascimento,
+                        EMAIL = model.Email,
+                        CEP = model.Endereco.Cep,
+                        LOGRADOURO = model.Endereco.Logradouro,
+                        UF = model.Endereco.UF,
+                        CIDADE = model.Endereco.Cidade,
+                        BAIRRO = model.Endereco.Bairro,
+                        ATIVIDADE = model.Atividade,
+                        INFORMACAO = model.Informacao,
+                        DTAINCLUSAO = DateTime.Now,
+                        USUARIOINCLUSAO = ""
+                    };
+
+                    db.CNVISITAPESSOAs.InsertOnSubmit(cNVISITAPESSOA);
+                    db.SubmitChanges();
+
                 }
 
             }
@@ -79,6 +162,17 @@ namespace ControleVisita.Models
             }
         }
 
+        public static IDictionary<string, string> GetTypePessoa()
+        {
+
+            IDictionary<string, string> dictionary = new Dictionary<string, string>();
+
+            dictionary.Add("F", "FÍSICA");
+            dictionary.Add("J", "JURÍDICA");
+
+            return dictionary;
+        }
+
         public static IEnumerable<SelectListItem> GetTipoPessoa()
         {
             var list = new[]
@@ -89,26 +183,6 @@ namespace ControleVisita.Models
             };
 
             return new SelectList(list, "Value", "Text");
-
-        }
-
-
-        public static void AddOrUpdateCliente(PessoaModel clienteModel)
-        {
-
-            using (var db = new OracleContext.OracleDataContext())
-            {
-
-                string dados = Newtonsoft.Json.JsonConvert.SerializeObject(clienteModel);
-
-                CNVISITAPESSOA cliente = new CNVISITAPESSOA
-                {
-                    DADOS = dados
-                };
-
-                db.CNVISITAPESSOAs.InsertOnSubmit(cliente);
-                db.SubmitChanges();
-            }
 
         }
     }

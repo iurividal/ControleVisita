@@ -22,14 +22,52 @@
 
 
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    @Html.LabelFor(a => a.Id)
-                    @Html.DevExtreme().TextBoxFor(m => m.Id).ReadOnly(true).Placeholder("Automático")
+                @*<div class="form-group col-md-2">
+                        @Html.LabelFor(a => a.Id)
+                        @Html.DevExtreme().TextBoxFor(m => m.Id).ReadOnly(true).Placeholder("Automático")
+                    </div>*@
+
+
+
+                <div class="form-group col-md-12">
+
+                    @Html.HiddenFor(a => a.Id)
+
+                    Cliente
+                    <div class="input-group">
+
+
+                        @(Html.DevExtreme().LookupFor(a=>a.IdPessoa).Width("92%")
+                .DataSource(ds=>ds.WebApi()
+                    .Controller("Clientes")
+                    .LoadAction("Get")
+                    .LoadMode(DataSourceLoadMode.Processed).Key("IdPessoa")
+
+                )
+                .DisplayExpr("NomeCompleto")
+                .ValueExpr("IdPessoa")
+
+                .SearchMode(DropDownSearchMode.Contains)
+                .SearchEnabled(true))
+
+                        <div class="input-group-append">
+
+                            <a href="@Url.Action("Cadastrar","Clientes", new {@returnUrl = ViewContext.HttpContext.Request.Url.PathAndQuery })" class="btn btn-success"><i class="fas fa-user-plus"></i></a>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="form-group col-md-4">
+
+            </div>
+
+            <div class="form-row">
+
+
+
+                <div class="form-group col-md-8">
                     @Html.LabelFor(a => a.MotivoVisita)
-                    @(Html.DevExtreme().SelectBoxFor(a=>a.MotivoVisita).NoDataText("Selecine o motivo")
+                    @(Html.DevExtreme().SelectBoxFor(a=>a.MotivoVisita).NoDataText("Selecione o motivo")
 
                 .DataSource(ds=>ds.WebApi()
                     .RouteName("selectbox")
@@ -49,116 +87,11 @@
                     @Html.DevExtreme().DateBoxFor(d => d.DataVisita).Max(DateTime.Now).DisplayFormat("dd/MM/yyyy").InputAttr("required", true)
 
                 </div>
+
+
             </div>
 
-            <div class="form-row">
 
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(a => a.Cliente.NomeCompleto)
-                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.NomeCompleto).InputAttr("required", true)
-                </div>
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(a => a.Cliente.Atividade)
-                    @(Html.DevExtreme().LookupFor(a=>a.Cliente.Atividade)
-                .DataSource(ds=>ds.WebApi()
-                    .RouteName("selectbox")
-                    .LoadAction("GetAtividades")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                )
-                .DisplayExpr("Profissao")
-                .ValueExpr("Profissao")
-                .SearchMode(DropDownSearchMode.Contains)
-                .SearchEnabled(true))
-
-
-                </div>
-            </div>
-
-            <div class="form-row">
-
-                <div class="form-group col-md-12">
-                    @Html.LabelFor(a => a.Cliente.Email):
-                    @Html.DevExtreme().TextBoxFor(a => a.Cliente.Email).InputAttr("required", true)
-
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-1">
-                    @Html.LabelFor(a => a.Cliente.DddCelular)
-                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.DddCelular).Mask("00").InputAttr("required", true)
-                </div>
-                <div class="form-group col-md-3">
-                    @Html.LabelFor(a => a.Cliente.Celular)
-                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.Celular).Mask("00000-0000").InputAttr("required", true)
-                </div>
-
-                <div class="form-group col-md-4">
-                    @Html.LabelFor(a => a.Cliente.WhatsApp)
-                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.WhatsApp).Mask("+55 (99) 00000-0000").MaskInvalidMessage("Número inválido")
-                </div>
-
-
-                <div class="form-group col-md-1">
-                    @Html.LabelFor(a => a.Cliente.DDDFone)
-                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.DDDFone).Mask("00")
-                </div>
-                <div class="form-group col-md-3">
-                    @Html.LabelFor(a => a.Cliente.Telefone)
-                    @Html.DevExtreme().TextBoxFor(d => d.Cliente.Telefone).MaxLength(20)
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-
-                    @Html.LabelFor(a => a.Cliente.Endereco.UF)
-
-                    @(Html.DevExtreme().SelectBoxFor(a => a.Cliente.Endereco.UF).InputAttr("required", true)
-            .DataSource(ds => ds.WebApi()
-                .Controller("UFApi")
-                .LoadAction("GetUF")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("ID")
-
-            )
-            .DisplayExpr("NOME")
-            .ValueExpr("NOME")
-
-            .SearchEnabled(true)
-            .OnValueChanged("Cidade")
-            .ID("dxUF")
-
-            )
-                </div>
-
-
-                <div class="form-group col-md-3">
-
-                    @Html.LabelFor(a => a.Cliente.Endereco.Cidade)
-
-                    @(Html.DevExtreme().SelectBoxFor(a => a.Cliente.Endereco.Cidade).InputAttr("required", true)
-            .DataSourceOptions(op=> op.Paginate(true).PageSize(15))
-                .DataSource(ds => ds.WebApi()
-                    .Controller("CidadeApi")
-                    .LoadAction("GetCidade")
-                    .Key("ID")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                )
-
-                .DisplayExpr("NOME")
-                .ValueExpr("NOME")
-                .SearchEnabled(true)
-                .ID("dxCidade")
-            )
-                </div>
-
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(a => a.Cliente.Endereco.Logradouro)
-                    @Html.DevExtreme().TextBoxFor(a => a.Cliente.Endereco.Logradouro)
-                </div>
-
-            </div>
 
             <div class="form-row">
 
@@ -169,8 +102,6 @@
                     @Html.LabelFor(a => a.MotivoNaoVenda)
 
                     @*@Html.DropDownListFor(a => a.MotivoNaoVenda, ViewBag.Motivos as SelectList, new { @class = "form-control" })*@
-
-
 
                     @(Html.DevExtreme().SelectBoxFor(a => a.MotivoNaoVenda)
                     .ID("cbxMotivo")
@@ -264,6 +195,9 @@
 
 <br />
 
+
+
+
 <div class="card">
     <div class="card-header"><h4>Cadastros realizados hoje</h4></div>
     <div class="card-body">
@@ -291,6 +225,7 @@
          $('.money').mask('000.000.000.000.000,00', { reverse: true});
 
     });
+
 
     function GetMsg(msg) {
 
@@ -390,5 +325,7 @@
         if ($('#Agendamento_DataAgendamento').val() == null)
             alert('Você não está reagendando a visita ela será cadastra e finalizada');
     }
+
+
 
 </script>

@@ -58,8 +58,9 @@ namespace ControleVisita.Models
 
                //Value = "CMC+6578+RUBEN.REIS+25",
                  Value = "CMC+9+LEANDRO.AMARAL+11",
-               // Value = "CMC+6516+SILVANA.SILVA+6",
-               // Value = "CMC+6573+JOACAZ.MARTINS+25",
+               // Value = "CNMF+27403+FELIPE.LOPES+1",
+                // Value = "CMC+6516+SILVANA.SILVA+6",
+                // Value = "CMC+6573+JOACAZ.MARTINS+25",
 
                 Expires = DateTime.Now.AddMinutes(20),
                 HttpOnly = true

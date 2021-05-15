@@ -64,6 +64,8 @@ namespace ControleVisita.Models
 
         [DisplayName("Percepção")]
         public string Percepcao { get; set; }
+
+        public int IdPessoa { get; set; }
     }
 
 

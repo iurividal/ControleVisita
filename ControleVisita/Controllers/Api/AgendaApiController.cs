@@ -24,8 +24,8 @@ namespace ControleVisita.Controllers
         {
             FiltroModelView filtroModel = new FiltroModelView
             {
-                DataReagentamentoInicial = DateTime.Now.Date,
-                DataReagentamentoFinal =  DateTime.Now.AddMonths(3)
+                DataReagentamentoInicial = DateTime.Now.Date.AddDays(-20),
+                DataReagentamentoFinal = DateTime.Now.AddMonths(2)
 
 
             };
@@ -35,23 +35,41 @@ namespace ControleVisita.Controllers
                .GetVisitas(codgrupo, empresa, filtroModel)
                .OrderByDescending(a => a.Agendamento.DataAgendamento).ToList();
 
-            List<Appointment> agendaModels = new List<Appointment>();
 
+
+            List<AgendaAppointment> agendaAppointments = new List<AgendaAppointment>();
             response.ForEach(item =>
             {
-                agendaModels.Add(new Appointment
+                agendaAppointments.Add(new AgendaAppointment
                 {
                     StartDate = item.Agendamento.DataAgendamento.Value.AddHours(8).ToUniversalTime().ToString("o"),
                     EndDate = item.Agendamento.DataAgendamento.Value.AddHours(18).ToUniversalTime().ToString("o"),
                     Text = $"{item.Cliente.NomeCompleto}",
                     AppointmentId = Convert.ToInt32(item.Id),
                     AllDay = false,
-                    Description = item.HistoricoVisita
+                    Description = item.HistoricoVisita,
+                    IdPercepcao = string.IsNullOrEmpty(item.Percepcao) || item.Percepcao == "Frio" ? 1 :
+                        item.Percepcao == "Morno" ? 2 : 3
 
                 });
             });
 
-            return Request.CreateResponse(DataSourceLoader.Load(agendaModels, loadOptions));
+            List<SchedulerResourcesModelView> SchedulerResourcesList = new List<SchedulerResourcesModelView>();
+
+            SchedulerResourcesList.Add(new SchedulerResourcesModelView
+            {
+                AgendaAppointments = agendaAppointments,
+                AgendaResources = AgendaResource.AgendaResources.ToList()
+            });
+
+            return Request.CreateResponse(DataSourceLoader.Load(agendaAppointments, loadOptions));
+        }
+
+        [HttpGet]
+        [Route("api/agendaResources")]
+        public HttpResponseMessage GetResoucer(DataSourceLoadOptions loadOptions)
+        {
+            return Request.CreateResponse(DataSourceLoader.Load(AgendaResource.AgendaResources.ToList(), loadOptions));
         }
 
         // POST api/<controller>

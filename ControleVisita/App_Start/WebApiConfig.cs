@@ -10,8 +10,7 @@ namespace ControleVisita
         {
             config.MapHttpAttributeRoutes();
 
-            var cors = new EnableCorsAttribute("172.16.0.19", "*", "*");
-
+            var cors = new EnableCorsAttribute("172.16.0.19", "*", "*");          
             config.EnableCors(cors);
 
             config.Routes.MapHttpRoute(

@@ -29,7 +29,7 @@ namespace ControleVisita.Controllers
         }
 
 
-        public HttpResponseMessage GetModelos(string empresa, DataSourceLoadOptions loadOptions)
+        public HttpResponseMessage GetModelos(string empresa,string marca, DataSourceLoadOptions loadOptions)
         {
             var response = BemViewModel.GetModelo(empresa);
             return Request.CreateResponse(DataSourceLoader.Load(response, loadOptions));
@@ -40,6 +40,14 @@ namespace ControleVisita.Controllers
         {
             return Request.CreateResponse(DataSourceLoader.Load(MotivoViewModel.GetMotivoVisita(), loadOptions));
         }
+        public HttpResponseMessage GetFormaContato(DataSourceLoadOptions loadOptions)
+        {
+
+            IEnumerable<string> tipoContato = new[] { "Celular", "WhatsApp", "E-mail", "Telefone Fixo", "Presencial", "Facebook", "Instagram", "Twitter", "Linkedin","Skype", "Outros" };
+
+            return Request.CreateResponse(DataSourceLoader.Load(tipoContato, loadOptions));
+        }
+
 
         public HttpResponseMessage GetVendedores(string empresa, string codgrupo, DataSourceLoadOptions loadOptions)
         {

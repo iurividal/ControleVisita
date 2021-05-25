@@ -42,5 +42,16 @@ namespace ControleVisita.Models.IdentityExtensions
 
             return claim.Value;
         }
+
+        public static string GetEmpresaPermissao(this IIdentity identity)
+        {
+            ClaimsIdentity claimsIdentity = identity as ClaimsIdentity;
+            Claim claim = claimsIdentity?.FindFirst("SubEmpresa");
+
+            if (claim == null)
+                return "";
+
+            return claim.Value;
+        }
     }
 }

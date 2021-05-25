@@ -1,9 +1,21 @@
-﻿@using ControleVisita.Models
+﻿@using ControleVisita.Models.IdentityExtensions
 @model ControleVisita.Models.PessoaModel
 @{
     ViewBag.Title = "Cadastrar";
 }
 
+<style>
+    .upper {
+        text-transform: uppercase;
+    }
+
+    .lower {
+        text-transform: lowercase;
+    }
+    .input-validation-error {
+        border: solid 1px #ff0000;
+    }
+</style>
 
 <h4>Adicionar Cliente</h4>
 <hr />
@@ -12,6 +24,8 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
+
+    @Html.HiddenFor(a => a.IdPessoa);
 
     <div class="form-row">
 
@@ -24,38 +38,68 @@
 
         <div class="form-group col-md-6">
             @Html.LabelFor(a => a.Documento)
-            @Html.TextBoxFor(a => a.Documento, new { @class = "form-control" })
+            @Html.TextBoxFor(a => a.Documento, new { @class = "form-control cpf" })
         </div>
     </div>
 
     <div class="form-row">
-        <div class="form-group col-md-8">
+        <div class="form-group col-md-5">
             @Html.LabelFor(a => a.NomeCompleto)*
-            @Html.TextBoxFor(a => a.NomeCompleto, new { @class = "form-control", minlength = 10 })
+            @Html.TextBoxFor(a => a.NomeCompleto, new { @class = "form-control upper", minlength = 10, @autocomplete = "off" })
             @Html.ValidationMessageFor(a => a.NomeCompleto)
+            <div id="clientExist" style="color:red"></div>
         </div>
 
         <div class="form-group col-md-4">
+            @Html.LabelFor(a => a.Atividade)
+
+
+            @(Html.DevExtreme().LookupFor(a=>a.Atividade)
+                .DataSource(ds=>ds.WebApi()
+                    .RouteName("selectbox")
+                    .LoadAction("GetAtividades")
+                    .LoadMode(DataSourceLoadMode.Raw).Key("Id")
+
+                )
+              //.DataSourceOptions(o => o.Group("Grupo"))
+                .DisplayExpr("Profissao")
+                .ValueExpr("Profissao")
+                .SearchMode(DropDownSearchMode.Contains)
+                .SearchEnabled(true)
+                .InputAttr(new {@class="form-control" })
+                )
+        </div>
+
+        <div class="form-group col-md-3">
             @Html.LabelFor(a => a.Email)
-            @Html.TextBoxFor(a => a.Email, new { @class = "form-control" })
+            @Html.TextBoxFor(a => a.Email, new { @class = "form-control lower" })
         </div>
 
     </div>
 
 
     <div class="form-row">
+        <div class="form-group col-md-1">
+            @Html.LabelFor(a => a.DDDFone)
+            @Html.TextBoxFor(a => a.DDDFone, new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-3">
 
-        <div class="form-group col-4">
             @Html.LabelFor(a => a.Telefone)
             @Html.TextBoxFor(a => a.Telefone, new { @class = "form-control" })
         </div>
 
-        <div class="form-group col-4">
-            @Html.LabelFor(a => a.Celular)*
+        <div class="form-group col-md-1">
+            @Html.LabelFor(a => a.DddCelular)
+            @Html.TextBoxFor(a => a.DddCelular, new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-3">
+
+            @Html.LabelFor(a => a.Celular)
             @Html.TextBoxFor(a => a.Celular, new { @class = "form-control" })
         </div>
 
-        <div class="form-group col-4">
+        <div class="form-group col-md-4">
             @Html.LabelFor(a => a.WhatsApp)
             @Html.TextBoxFor(a => a.WhatsApp, new { @class = "form-control" })
         </div>
@@ -129,7 +173,7 @@
     <div class="form-row">
         <div class="form-group col-md-12">
             @Html.LabelFor(a => a.Informacao)
-            @Html.TextAreaFor(a => a.Informacao, new { @class = "form-control", @placeholder = "Informações do cliente" })
+            @Html.TextAreaFor(a => a.Informacao, new { @class = "form-control", @placeholder = "Informações adicionais sobre o cliente" })
         </div>
     </div>
 
@@ -139,8 +183,6 @@
 
     @Html.ActionLink("Cancelar", "Index", "Home")
 
-
-
 }
 
 <script>
@@ -149,11 +191,42 @@
 
 
         $('.money').mask('000.000.000.000.000,00', { reverse: true });
-        $('#Celular').mask('(00) 00000-0000');
+
+        $('#Celular').mask('00000-0000');
+        $('#DddCelular').mask('00');
+
         $('#WhatsApp').mask('+55 (00) 00000-0000');
         $('#Endereco_Cep').mask('00000-000');
 
+        $('#Telefone').mask("0000-00009");
+        $('#DDDFone').mask("00");
+
+
+
+
+
     });
+
+    $("#NomeCompleto").blur(function () {
+
+        var nome = $("#NomeCompleto").val();
+        var empresa = '@User.Identity.GetEmpresa()';
+
+        $.get("../api/clientes?nomerazao="+nome + "&empresa=" + empresa, function (data) {
+            $("#clientExist").html(data);
+        });
+
+    });
+
+
+
+    var options = {
+        onKeyPress: function (cpf, ev, el, op) {
+            var masks = ['000.000.000-000', '00.000.000/0000-00'];
+            $('.cpf').mask((cpf.length > 14) ? masks[1] : masks[0], op);
+        }
+    }
+    $('.cpf').length > 11 ? $('.cpf').mask('00.000.000/0000-00', options) : $('.cpf').mask('000.000.000-00#', options);
 
     function Cidade(e) {
 
@@ -162,6 +235,8 @@
         $("#dxCidade").dxSelectBox("instance").getDataSource().filter(["ESTADO", "=", e.value]);
         $("#dxCidade").dxSelectBox("instance").getDataSource().reload();
     }
+
+
 
 </script>
 

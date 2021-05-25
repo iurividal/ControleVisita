@@ -1,0 +1,129 @@
+﻿@model ControleVisita.Models.LoginModel
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Logar</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.mask.js"></script>
+    @*<script src="~/Scripts/dx.all.js"></script>*@
+
+    @if (Model.Empresa == "CMC")
+    {
+        <link href="~/Content/login.maggi.css" rel="stylesheet" />
+    }
+    else
+    {
+        <link href="~/Content/login.cnmf.css" rel="stylesheet" />
+    }
+
+
+    <script src="~/Scripts/login.js"></script>
+
+</head>
+<body>
+    <div id="employee">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            @Html.HiddenFor(a => a.Empresa)
+            <div class="group">
+
+                <div id="logo" style="text-align:center"><img src="~/Content/Imagem/@(Model.Empresa).png" /></div>
+            </div>
+
+            <div class="group">
+                @Html.TextBoxFor(m => m.Login, new { @required = true }) <span class="highlight"></span><span class="bar"></span>
+                @Html.ValidationMessageFor(m => m.Login)
+                @*<input type="text" name="usuario" required /> <span class="highlight"></span><span class="bar"></span>*@
+                <label>Usuário</label>
+            </div>
+            <div class="group">
+                @Html.PasswordFor(m => m.Password, new { @required = true })<span class="highlight"></span><span class="bar"></span>
+                @Html.ValidationMessageFor(m => m.Password)
+                @*<input type="password" id="senha" required name="senha">*@
+                <label>Senha</label>
+            </div>
+
+            @*<div class="group">
+                    <div class="g-recaptcha" data-sitekey="6LeQwcwZAAAAAEA1toRqBvXf8E8hMNBMKkgaFoEL"></div>
+                </div>*@
+            <button type="submit" id="btnSubmit" class="button buttonBlue">
+                Entrar
+                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+            </button>
+
+            @*<div>
+                    @Html.ActionLink("Primeiro acesso", "Registrar", new { p = "primeiroacesso" }, new { @class = "btn btn-link" })
+                    @Html.ActionLink("Recuperar senha", "Registrar", new { p = "recuperarsenha" }, new { @class = "btn btn-link" })
+                </div>*@
+        }
+
+
+
+
+
+    </div>
+
+
+    <script>
+
+
+        $("#btnSubmit").click(function () {
+
+            $("#btnSubmit").text
+
+            document.getElementById("btnSubmit").innerText = "Aguarde...";
+            $("#btnSubmit").prop('disable', true);
+            
+
+        });
+
+        //toastr.options = {
+        //    "closeButton": false,
+        //    "debug": false,
+        //    "newestOnTop": false,
+        //    "progressBar": false,
+        //    "positionClass": "toast-top-center",
+        //    "preventDuplicates": false,
+        //    "onclick": null,
+        //    "showDuration": "300",
+        //    "hideDuration": "1000",
+        //    "timeOut": "5000",
+        //    "extendedTimeOut": "1000",
+        //    "showEasing": "swing",
+        //    "hideEasing": "linear",
+        //    "showMethod": "fadeIn",
+        //    "hideMethod": "fadeOut"
+        //}
+
+          $(document).ready(function () {
+
+            var msg = '@ViewBag.erro';
+
+              if (msg.length > 0) {
+                 // window.AlertError(msg);
+                 // toastr["error"](msg)
+
+                 /* DevExpress.ui.notify('teste', 'error', 6000);*/
+              }
+
+
+              //$("#Login").focus();
+          });
+
+    </script>
+</body>
+</html>

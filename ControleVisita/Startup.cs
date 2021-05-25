@@ -5,7 +5,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Owin;
 using Microsoft.Owin.Security.Cookies;
-
+using System.Web.Http.Cors;
 
 [assembly: OwinStartup(typeof(ControleVisita.Startup))]
 
@@ -22,7 +22,10 @@ namespace ControleVisita
                 LoginPath = new PathString("/Login/")
             });
 
+
+           
             app.UseCors(CorsOptions.AllowAll);
+         
            
             // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=316888
         }

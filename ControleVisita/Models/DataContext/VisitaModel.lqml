@@ -37,7 +37,7 @@
       <Association Name="CNGRUPO_CNGRUPO" ed:AssociationGuid="584b03cc-cdc5-433d-b001-9a43944d93cc" Member="CNGRUPOs_RDVAPROVA" ed:Guid="c86aae34-a939-4583-91f5-bdcb0e56c463" ThisKey="CODGRUPO" OtherKey="RDVAPROVA" Type="CNGRUPO" />
       <Association Name="CNGRUPO_CNGRUPO" ed:AssociationGuid="584b03cc-cdc5-433d-b001-9a43944d93cc" Member="CNGRUPO_RDVAPROVA" ed:Guid="d73f8e76-960f-4159-9c4f-22987b0671f5" ThisKey="RDVAPROVA" OtherKey="CODGRUPO" Type="CNGRUPO" DeleteRule="NO ACTION" IsForeignKey="true" />
       <Association Name="CNGRUPO_CNGRUPOSGEPESSOA" ed:AssociationGuid="f41ff342-a088-4e1e-b085-cbef9bb195ca" Member="CNGRUPOSGEPESSOAs" ed:Guid="91c63eab-dbcf-4400-9640-ab7217efcf17" ThisKey="CODGRUPO" OtherKey="CODGRUPO" Type="CNGRUPOSGEPESSOA" />
-      <Association Name="CNGRUPO_CNVISITA" ed:AssociationGuid="c9d46cca-3be7-450a-bc24-acb77682da3f" Member="CNVISITAs" ed:Guid="32ee39de-9a7d-4833-9e79-3793b09c2774" ThisKey="CODGRUPO" OtherKey="CODGRUPO" Type="CNVISITA" />
+      <Association Name="CNGRUPO_CNVISITA" ed:AssociationGuid="6dfc132a-febb-4197-a22c-0266ab886b1b" Member="CNVISITAs" ed:Guid="df7ec4c7-cefd-4e61-97ed-d2f854dd0476" ThisKey="CODGRUPO" OtherKey="CODGRUPO" Type="CNVISITA" />
     </Type>
   </Table>
   <Table Name="CN_GRUPOS_GEPESSOA" Member="CNGRUPOSGEPESSOAs">
@@ -142,63 +142,67 @@
     </Type>
   </Table>
   <Table Name="CN_VISITA_PESSOA" Member="CNVISITAPESSOAs">
-    <Type Name="CNVISITAPESSOA" ed:Guid="e9682fe6-ed44-4390-b5d3-40905df66bbe">
-      <Column Name="IDPESSOA" Type="System.Decimal" AutoSync="OnInsert" DbType="NUMBER GENERATED AS IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="bd0d2572-880d-4b7c-8e43-6be16c9c645c" />
-      <Column Name="NOMECOMPLETO" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="ea5995bb-51ce-4143-bace-6a5dcda1365c" />
-      <Column Name="TIPOPESSOA" Type="System.String" DbType="VARCHAR2(30 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="30" ed:ValidateMaxLength="30" ed:ValidateRequired="false" ed:Guid="c570e16e-9d34-4154-8c15-529e314b2591" />
-      <Column Name="DOCUMENTO" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="cde11393-55e9-4b04-bfbf-2238106973e1" />
-      <Column Name="DDDFONE" Type="System.String" DbType="VARCHAR2(5 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="5" ed:ValidateMaxLength="5" ed:ValidateRequired="false" ed:Guid="3f94cea9-bf56-4e31-b52f-82ecc791254a" />
-      <Column Name="TELEFONE" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="4a10819a-2cfe-46c3-83a7-40db16d7999c" />
-      <Column Name="DDDCELULAR" Type="System.String" DbType="VARCHAR2(5 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="5" ed:ValidateMaxLength="5" ed:ValidateRequired="false" ed:Guid="9a2fc626-165d-401a-989f-f573591a8595" />
-      <Column Name="CELULAR" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="9484df9b-5cd1-44c3-9344-635ff067ba5a" />
-      <Column Name="WHATSAPP" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="451a7722-b417-487b-844c-daf6e4e84d46" />
-      <Column Name="DATANASCIMENTO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" Precision="0" ed:ValidateRequired="false" ed:Guid="5061eedb-dbc7-43ca-a817-0bca13fdd519" />
-      <Column Name="EMAIL" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="4c891aa3-da9f-4dbd-9cab-7868734bc40f" />
-      <Column Name="CEP" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="6bb5aaf9-60e2-4fa7-8d50-950eba5326d9" />
-      <Column Name="LOGRADOURO" Type="System.String" DbType="VARCHAR2(500 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="500" ed:ValidateMaxLength="500" ed:ValidateRequired="false" ed:Guid="48db7e5d-b553-41f9-ae07-a465fbdbddc7" />
-      <Column Name="UF" Type="System.String" DbType="VARCHAR2(50 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="ab34ed4b-ba0f-4769-9cc4-73967378bbe4" />
-      <Column Name="CIDADE" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="15b1740e-3284-482c-9b10-a973b7711e64" />
-      <Column Name="BAIRRO" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="60e57990-d021-445c-90ea-937bea52cf1b" />
-      <Column Name="ATIVIDADE" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="6cb6ed6b-b5cc-4d17-8bf0-ff48b91da428" />
-      <Column Name="INFORMACAO" Type="System.String" DbType="VARCHAR2(4000 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="4000" ed:ValidateMaxLength="4000" ed:ValidateRequired="false" ed:Guid="d09684fc-3815-4407-af0c-ffee6d35a291" />
-      <Column Name="DTAINCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" DefaultValue="SYSDATE" Precision="0" ed:ValidateRequired="false" ed:Guid="2785ccb6-280d-4b00-96dd-15dc56d80a23" />
-      <Column Name="USUARIOINCLUSAO" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="81d45005-083b-4d1c-9ece-928a0dcddd83" />
+    <Type Name="CNVISITAPESSOA" ed:Guid="dcc12ca4-493a-4658-a17e-864ad8fe1bdc">
+      <Column Name="IDPESSOA" Type="System.Decimal" AutoSync="OnInsert" DbType="NUMBER GENERATED AS IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="6e842ec4-e85b-47b3-86ed-941450e71e28" />
+      <Column Name="NOMECOMPLETO" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="4b3cd660-9c29-4223-81cd-079fc49aca66" />
+      <Column Name="TIPOPESSOA" Type="System.String" DbType="VARCHAR2(30 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="30" ed:ValidateMaxLength="30" ed:ValidateRequired="false" ed:Guid="9e40a6c9-6fa8-4f03-8fdd-dd8808ce6518" />
+      <Column Name="DOCUMENTO" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="235e9b05-399d-49e2-b59c-217d0a4f5dae" />
+      <Column Name="DDDFONE" Type="System.String" DbType="VARCHAR2(5 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="5" ed:ValidateMaxLength="5" ed:ValidateRequired="false" ed:Guid="42780da5-6133-4d6d-9aa1-eb2e8021196a" />
+      <Column Name="TELEFONE" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="a7adc43e-195e-4564-86a4-ae90e5123744" />
+      <Column Name="DDDCELULAR" Type="System.String" DbType="VARCHAR2(5 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="5" ed:ValidateMaxLength="5" ed:ValidateRequired="false" ed:Guid="f5d0dcf0-6077-4f90-b0e3-41523bf410f4" />
+      <Column Name="CELULAR" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="4a12c3a3-d9d4-4f86-a963-4c8c4ab150a5" />
+      <Column Name="WHATSAPP" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="eb8a8d82-205c-4c72-81a6-774ee7b75ebe" />
+      <Column Name="DATANASCIMENTO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" Precision="0" ed:ValidateRequired="false" ed:Guid="6212cdae-4103-49fd-99f9-a324539cd1bc" />
+      <Column Name="EMAIL" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="e4af105d-9601-4646-819d-d58498140d5e" />
+      <Column Name="CEP" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="7b5f8c2e-a720-4533-bdf5-de13675969fb" />
+      <Column Name="LOGRADOURO" Type="System.String" DbType="VARCHAR2(500 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="500" ed:ValidateMaxLength="500" ed:ValidateRequired="false" ed:Guid="0121a317-d545-48af-89c3-dff52caa5f28" />
+      <Column Name="UF" Type="System.String" DbType="VARCHAR2(50 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="2ae8286c-073d-4a30-92cd-93db94a11a88" />
+      <Column Name="CIDADE" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="4e483da5-a911-4260-84ea-d40e4078ae0f" />
+      <Column Name="BAIRRO" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="2c38d3c9-09ad-4a3e-a1dd-73b1469038e9" />
+      <Column Name="ATIVIDADE" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="fe372416-95c6-4017-bfda-c3e6180c200a" />
+      <Column Name="INFORMACAO" Type="System.String" DbType="VARCHAR2(4000 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="4000" ed:ValidateMaxLength="4000" ed:ValidateRequired="false" ed:Guid="47e1bf65-6367-4a83-81a7-37085d357a6b" />
+      <Column Name="DTAINCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" DefaultValue="SYSDATE" Precision="0" ed:ValidateRequired="false" ed:Guid="58f72b91-a881-49d5-a234-d961fc028d9d" />
+      <Column Name="USUARIOINCLUSAO" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="1dc2ce31-109d-454c-9d24-9dacf44afc07" />
+      <Column Name="CODEMPRESA" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="2c5da606-ffb4-4588-b0f8-e3148b6b3b7d" />
     </Type>
   </Table>
   <Table Name="CN_VISITAS" Member="CNVISITAs">
-    <Type Name="CNVISITA" ed:Guid="4797ac52-bb7a-4c3d-8836-1cd709bdda31">
-      <Column Name="CODVISITA" Type="System.Decimal" DbType="NUMBER NOT NULL" IsPrimaryKey="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="7bb92884-b1ac-4a38-bc60-d6a59c54cd2e" />
-      <Column Name="COD_GRUPO" Member="CODGRUPO" Type="System.Int32" DbType="NUMBER(6) NULL" CanBeNull="true" UpdateCheck="Never" Precision="6" ed:ValidateRequired="false" ed:Guid="979056df-00dc-4202-bae2-11a0e6d8dc2e" />
-      <Column Name="DATA_VISITA" Member="DATAVISITA" Type="System.DateTime" DbType="DATE NOT NULL" CanBeNull="false" UpdateCheck="Never" Precision="0" ed:ValidateRequired="true" ed:Guid="3c301f1e-1e34-45dc-bf9d-f08179555152" />
-      <Column Name="VISITADO" Type="System.String" DbType="VARCHAR2(60 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="60" ed:ValidateMaxLength="60" ed:ValidateRequired="false" ed:Guid="90b07ba4-b1ca-4fed-a448-6abd7b246f07" />
-      <Column Name="FONE" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="7501232f-3a22-4cbb-8390-6612f2cb7c29" />
-      <Column Name="ENDERECO" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="122030c1-ed65-4cfb-9001-404e5c3179d6" />
-      <Column Name="VENDEU" Type="System.String" DbType="CHAR(1) NOT NULL" CanBeNull="false" UpdateCheck="Never" FixedLength="true" MaxLength="1" ed:ValidateMaxLength="1" ed:ValidateRequired="true" ed:Guid="f5282b24-9cf7-4806-8d9e-527ac8e67d31" />
-      <Column Name="MOTIVO_NAO_VENDA" Member="MOTIVONAOVENDA" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="71566fc8-1150-498e-83a4-bc30cef58d73" />
-      <Column Name="OBSERVACOES" Type="System.String" DbType="VARCHAR2(4000 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="4000" ed:ValidateMaxLength="4000" ed:ValidateRequired="false" ed:Guid="adc99a1d-f017-47db-915a-f110f2c487aa" />
-      <Column Name="DATA_REAGENDAMENTO" Member="DATAREAGENDAMENTO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" Precision="0" ed:ValidateRequired="false" ed:Guid="a6135def-6287-4e06-a843-47db5a14afc0" />
-      <Column Name="DATA_ATUALIZACAO" Member="DATAATUALIZACAO" Type="System.String" DbType="VARCHAR2(20 CHAR) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="true" ed:Guid="14281c89-6acc-4b5e-b85c-05989d64b2cd" />
-      <Column Name="USUARIO_ATUALIZACAO" Member="USUARIOATUALIZACAO" Type="System.String" DbType="VARCHAR2(50 CHAR) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="589edc97-af42-4d18-b5b1-3d2da5383968" />
-      <Column Name="REAGENDAMENTO_REALIZADO" Member="REAGENDAMENTOREALIZADO" Type="System.Boolean" DbType="NUMBER(1) NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="027ad4a4-8bf0-4d85-b362-717995635706" />
-      <Column Name="EMAIL" Type="System.String" DbType="VARCHAR2(400 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="400" ed:ValidateMaxLength="400" ed:ValidateRequired="false" ed:Guid="f4a73149-acfa-402d-a51b-d44a95abc4a9" />
-      <Column Name="VALORBEM" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="956e1d68-61ad-4eaa-b949-b82fb5b42ba3" />
-      <Column Name="UF" Type="System.String" DbType="VARCHAR2(30 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="30" ed:ValidateMaxLength="30" ed:ValidateRequired="false" ed:Guid="82055af1-4060-43b2-b563-7afe1742a684" />
-      <Column Name="CIDADE" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="804c0616-6e4a-4937-99f3-b396c6cb0bf5" />
-      <Column Name="DDDCELULAR" Type="System.String" DbType="VARCHAR2(10 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="10" ed:ValidateMaxLength="10" ed:ValidateRequired="false" ed:Guid="63f135d5-0005-4109-87ba-feb7d3926294" />
-      <Column Name="CELULAR" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="2b622e69-7b3d-45b2-be90-0d7dc7f34e19" />
-      <Column Name="DDDFONE" Type="System.String" DbType="VARCHAR2(10 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="10" ed:ValidateMaxLength="10" ed:ValidateRequired="false" ed:Guid="066971d9-4b19-49b8-8cbd-8edee1003e9a" />
-      <Column Name="WHATSAPP" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="80ceef60-c213-4a90-a758-7aa5d5499845" />
-      <Column Name="ATIVIDADE" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="763eb1f9-8650-46c5-9bf3-988abff3e819" />
-      <Column Name="DTAEXCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" Precision="0" ed:ValidateRequired="false" ed:Guid="0f727971-6d77-40ec-a82b-c86636f7ae7c" />
-      <Column Name="USUARIOEXCLUSAO" Type="System.String" DbType="VARCHAR2(50 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="1a331dc2-5b96-4ad4-a0e9-6d8b492371d4" />
-      <Column Name="MARCABEM" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="608e9e1c-b188-4638-a495-9710c18a2b41" />
-      <Column Name="MODELOBEM" Type="System.String" DbType="VARCHAR2(500 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="500" ed:ValidateMaxLength="500" ed:ValidateRequired="false" ed:Guid="20145c86-de3d-482a-b4c2-97aa03fc7ff2" />
-      <Column Name="DATAINCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" DefaultValue="SYSDATE" Precision="0" ed:ValidateRequired="false" ed:Guid="b4846b14-42b8-4fa4-8521-27a396c96576" />
-      <Column Name="USUARIOINCLUSAO" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="f897bf85-1008-46ea-a992-e2a79215ceff" />
-      <Column Name="MOTIVOVISITA" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="9819d438-3263-4a2e-a06e-fccad533904c" />
-      <Column Name="PERCEPCAO" Type="System.String" DbType="VARCHAR2(50 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="b4a0550f-2b72-4aeb-b127-9df4190d2cd7" />
-      <Column Name="IDPESSOA" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="b7644ebd-ea13-4375-8343-18ddc3438540" />
-      <Association Name="CNGRUPO_CNVISITA" ed:AssociationGuid="c9d46cca-3be7-450a-bc24-acb77682da3f" Member="CNGRUPO" ed:Guid="4d2eed89-d0cc-4c1a-8429-cbd205e0d951" ThisKey="CODGRUPO" OtherKey="CODGRUPO" Type="CNGRUPO" DeleteRule="NO ACTION" IsForeignKey="true" />
+    <Type Name="CNVISITA" ed:Guid="530186f7-2172-422d-9c3c-b14005144da6">
+      <Column Name="CODVISITA" Type="System.Decimal" DbType="NUMBER NOT NULL" IsPrimaryKey="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="cd3ed8a8-7653-4e01-bbc4-a893b7b991d5" />
+      <Column Name="COD_GRUPO" Member="CODGRUPO" Type="System.Int32" DbType="NUMBER(6) NULL" CanBeNull="true" UpdateCheck="Never" Precision="6" ed:ValidateRequired="false" ed:Guid="fd0eafcf-1fdb-4f08-9035-b0dfc84f262d" />
+      <Column Name="DATA_VISITA" Member="DATAVISITA" Type="System.DateTime" DbType="DATE NOT NULL" CanBeNull="false" UpdateCheck="Never" Precision="0" ed:ValidateRequired="true" ed:Guid="1767a992-28dd-47e1-88a0-f0e511494aaf" />
+      <Column Name="VISITADO" Type="System.String" DbType="VARCHAR2(60 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="60" ed:ValidateMaxLength="60" ed:ValidateRequired="false" ed:Guid="3179645f-66d9-45e7-a94b-3628cb30f72a" />
+      <Column Name="FONE" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="b0b518a2-2e50-47be-af06-9c06bc99800f" />
+      <Column Name="ENDERECO" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="af19378e-d4b3-4846-a5d3-683bf0286ad2" />
+      <Column Name="VENDEU" Type="System.String" DbType="CHAR(1) NOT NULL" CanBeNull="false" UpdateCheck="Never" FixedLength="true" MaxLength="1" ed:ValidateMaxLength="1" ed:ValidateRequired="true" ed:Guid="05ab7b35-c95e-473e-b169-3ee5be2cd436" />
+      <Column Name="MOTIVO_NAO_VENDA" Member="MOTIVONAOVENDA" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="b0d58d2a-0158-4dc5-babd-251a6b9d58c7" />
+      <Column Name="OBSERVACOES" Type="System.String" DbType="VARCHAR2(4000 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="4000" ed:ValidateMaxLength="4000" ed:ValidateRequired="false" ed:Guid="778ba919-0e9d-4720-98a1-59f2c027b317" />
+      <Column Name="DATA_REAGENDAMENTO" Member="DATAREAGENDAMENTO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" Precision="0" ed:ValidateRequired="false" ed:Guid="11e09939-968e-4fa2-8250-2de870730177" />
+      <Column Name="DATA_ATUALIZACAO" Member="DATAATUALIZACAO" Type="System.String" DbType="VARCHAR2(20 CHAR) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="true" ed:Guid="abf3c0ca-320b-47b1-9ef0-8eedd248c0d6" />
+      <Column Name="USUARIO_ATUALIZACAO" Member="USUARIOATUALIZACAO" Type="System.String" DbType="VARCHAR2(50 CHAR) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="8971ae36-f3de-4a76-b9a6-2c546baf65d0" />
+      <Column Name="REAGENDAMENTO_REALIZADO" Member="REAGENDAMENTOREALIZADO" Type="System.Boolean" DbType="NUMBER(1) NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="52da55c0-ef9e-4ad4-8499-031f410346bd" />
+      <Column Name="EMAIL" Type="System.String" DbType="VARCHAR2(400 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="400" ed:ValidateMaxLength="400" ed:ValidateRequired="false" ed:Guid="7d8e28ea-4c06-4380-a1b0-6a0254f4ce3f" />
+      <Column Name="VALORBEM" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="3759c265-9b7d-418a-b0b5-a6ab553503c4" />
+      <Column Name="UF" Type="System.String" DbType="VARCHAR2(30 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="30" ed:ValidateMaxLength="30" ed:ValidateRequired="false" ed:Guid="d526ac00-19ad-4de2-ba47-1f1a0212f679" />
+      <Column Name="CIDADE" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="6c0e38bd-1b2a-4c6a-aded-642a0103d0d9" />
+      <Column Name="DDDCELULAR" Type="System.String" DbType="VARCHAR2(10 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="10" ed:ValidateMaxLength="10" ed:ValidateRequired="false" ed:Guid="c80e70f6-0847-4bc7-9a70-4495de85a1a4" />
+      <Column Name="CELULAR" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="c445f403-cca0-41ab-84e8-c2933e188a05" />
+      <Column Name="DDDFONE" Type="System.String" DbType="VARCHAR2(10 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="10" ed:ValidateMaxLength="10" ed:ValidateRequired="false" ed:Guid="28c43e79-d296-4de0-86ae-fab2448e7a9f" />
+      <Column Name="WHATSAPP" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="20" ed:ValidateMaxLength="20" ed:ValidateRequired="false" ed:Guid="e8639e63-1ea6-43bc-a1b4-d7dccae0aa9a" />
+      <Column Name="ATIVIDADE" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="687289b3-9f04-458f-93c6-53c880841bb9" />
+      <Column Name="DTAEXCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" Precision="0" ed:ValidateRequired="false" ed:Guid="c5684507-3f4b-4442-88b1-e0ba8e757e0a" />
+      <Column Name="USUARIOEXCLUSAO" Type="System.String" DbType="VARCHAR2(50 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="f2243f1a-b5c2-41cb-a1ae-76b29628f3a1" />
+      <Column Name="MARCABEM" Type="System.String" DbType="VARCHAR2(100 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="100" ed:ValidateMaxLength="100" ed:ValidateRequired="false" ed:Guid="98be3a73-6ffc-4a0a-83d7-899be6af28bc" />
+      <Column Name="MODELOBEM" Type="System.String" DbType="VARCHAR2(500 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="500" ed:ValidateMaxLength="500" ed:ValidateRequired="false" ed:Guid="1e47da0e-9eeb-47b2-9c35-e2887436c031" />
+      <Column Name="DATAINCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" DefaultValue="SYSDATE" Precision="0" ed:ValidateRequired="false" ed:Guid="2465a5a2-e019-493b-9d77-910465081e35" />
+      <Column Name="USUARIOINCLUSAO" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="b66bece9-7ad8-4e2e-8c75-aa1b3cdf51a5" />
+      <Column Name="MOTIVOVISITA" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="a9ccc9d3-ed26-4a73-9f88-350cdc4577d6" />
+      <Column Name="PERCEPCAO" Type="System.String" DbType="VARCHAR2(50 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="5c08d47e-9fab-4fc8-bd16-73f1fef41392" />
+      <Column Name="IDPESSOA" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="f4e3a9d1-9e28-4b83-a88a-de8280bd7860" />
+      <Column Name="TIPOCONTATO" Type="System.String" DbType="VARCHAR2(200 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="200" ed:ValidateMaxLength="200" ed:ValidateRequired="false" ed:Guid="ff1e2c72-4908-4b6a-8383-97684bccbbdb" />
+      <Column Name="VENDA_QTD" Member="VENDAQTD" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="e21af8f4-03e8-441b-b857-d79b017c4553" />
+      <Column Name="VENDA_VALOR" Member="VENDAVALOR" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="a039a0c8-1a45-4b49-9f34-dbf408d8f134" />
+      <Association Name="CNGRUPO_CNVISITA" ed:AssociationGuid="6dfc132a-febb-4197-a22c-0266ab886b1b" Member="CNGRUPO" ed:Guid="8d1fa53f-96da-4a4a-b719-bf6152eff3a5" ThisKey="CODGRUPO" OtherKey="CODGRUPO" Type="CNGRUPO" DeleteRule="NO ACTION" IsForeignKey="true" />
     </Type>
   </Table>
   <Type Name="PCURSORVISITAResult" ed:Guid="2e98cdd5-2297-4300-a7ed-59cbe5930903">
@@ -245,5 +249,15 @@
     <Parameter Name="PDDATAINICIAL" Type="System.DateTime" DbType="DATE" />
     <Parameter Name="PDDATAFINAL" Type="System.DateTime" DbType="DATE" />
     <ElementType Type="PCURSORVISITAResult" />
+  </Function>
+  <Function Name="CMGLOBAL.F_BUSCAMARCACOD" Method="FBUSCAMARCACOD" IsComposable="true" ed:Guid="75247983-578c-44f3-b0ff-82bd17bfc9cc">
+    <Parameter Name="PSOWNER" Type="System.String" DbType="VARCHAR2(32766 CHAR)" />
+    <Parameter Name="PNSEQREVENDA" Type="System.Decimal" DbType="NUMBER" FixedLength="true" MaxLength="22" />
+    <Return Type="System.Decimal" />
+  </Function>
+  <Function Name="CMGLOBAL.F_BUSCAMARCA" Method="FBUSCAMARCA" IsComposable="true" ed:Guid="3c788845-f8b7-47fc-892a-d961dddc6352">
+    <Parameter Name="PSOWNER" Type="System.String" DbType="VARCHAR2(32766 CHAR)" />
+    <Parameter Name="PNSEQREVENDA" Type="System.Decimal" DbType="NUMBER" FixedLength="true" MaxLength="22" />
+    <Return Type="System.String" />
   </Function>
 </Database>

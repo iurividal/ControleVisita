@@ -29,11 +29,31 @@ namespace ControleVisita.Controllers
             // ViewBag.Clientes = await Models.ClienteData.Get();
             var visita = new VisitaModel();
 
+            ViewData["HISTORICOVISITA"] = new List<VisitaHistoricoModel>();
+
             if (Request.QueryString["p"] != null)
-                visita = new VisitaViewModel().GetVisita(Convert.ToInt32(Request.QueryString["p"]), User.Identity.GetEmpresa());
+            {
+                int codvisita = Convert.ToInt32(Request.QueryString["p"]);
+                var v = new VisitaViewModel().GetVisita(codvisita, User.Identity.GetEmpresa());
+
+                visita.IdPessoa = v.IdPessoa;
+                visita.BemViewModel = v.BemViewModel;
+                visita.ValorBem = v.ValorBem;
+                visita.ValorBemAux = v.ValorBemAux;
+                visita.MotivoVisita = v.MotivoVisita;
+
+
+                ViewData["HISTORICOVISITA"] = new VisitaViewModel().GetHistoricoVisita(codvisita, visita.IdPessoa, User.Identity.GetEmpresa());
+
+                ViewData["DADOS_CLIENTE"] = ClienteData.Get(v.IdPessoa, User.Identity.GetEmpresa()).Result;
+
+            }
+
 
             ViewBag.Motivos = ToSelectList(MotivoViewModel.GetAll());
             ViewBag.Estados = CidadeModel.ToSectList(CidadeModel.GetEstado());
+
+
 
             return View(visita);
         }
@@ -45,37 +65,55 @@ namespace ControleVisita.Controllers
         public ActionResult Cadastrar(VisitaModel model)
         {
 
-            model.Cliente = ClienteData.Get(model.IdPessoa).Result;
+          
+
+            if (model.IdPessoa == 0)
+            {
+                ModelState.AddModelError(Guid.NewGuid().ToString(), "Selecione um cliente");
+                return View(model);
+            }
+
+            if (model.Venda == "Não Realizada" && string.IsNullOrEmpty(model.MotivoNaoVenda))
+            {
+                ModelState.AddModelError(Guid.NewGuid().ToString(), "Selecione um motivo da não venda");
+                return View(model);
+            }
+
+
+            model.Cliente = ClienteData.Get(model.IdPessoa, User.Identity.GetEmpresa()).Result;
 
             if (ModelState.IsValid)
             {
-
-
-
                 var user = (LoginModel)Session["USUARIOLOGADO"];
 
 
-
-                if (!string.IsNullOrEmpty(model.ValorBemAux))
-                {
-
-                    var remove = (model.ValorBemAux.Replace(".", "")).Replace(",", ".");
-                    var value = Decimal.Parse(remove, CultureInfo.InvariantCulture);
-                    model.ValorBem = value;
-                }
-
+                model.ValorBem = CorrigiValorMoeda(model.ValorBemAux);
+                model.ValorVenda = CorrigiValorMoeda(model.ValorVendaStr);
 
 
                 VisitaViewModel.AddOrUpdate(model, user);
 
                 ViewBag.Error = model.Id == 0 ? "0|success" : "Cadastro Atualizado com sucesso|success";
 
+                //ViewData["HISTORICOVISITA"] = new VisitaViewModel().GetHistoricoVisita(Convert.ToInt32(model.Id), model.Cliente.IdPessoa, User.Identity.GetEmpresa());
+
                 return View(new VisitaModel());
             }
 
+
+            ViewData["HISTORICOVISITA"] = new VisitaViewModel();
             ViewBag.Error = "1|error";
 
             return View(model);
+        }
+        private decimal CorrigiValorMoeda(string valor)
+        {
+            if (string.IsNullOrEmpty(valor))
+                return 0;
+
+            var remove = valor.Replace(".", "").Replace(",", ".");
+            var value = Decimal.Parse(remove, CultureInfo.InvariantCulture);
+            return value;
         }
 
         [NonAction]
@@ -144,6 +182,20 @@ namespace ControleVisita.Controllers
         }
 
         public ActionResult Agenda()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public PartialViewResult Historico(int idpessoa)
+        {
+            ViewData["DADOS_CLIENTE"] = ClienteData.Get(idpessoa, User.Identity.GetEmpresa());
+
+            ViewData["HISTORICOVISITA"] = new VisitaViewModel().GetHistoricoVisita(0, idpessoa, User.Identity.GetEmpresa());
+            return PartialView("_Historico");
+        }
+
+        public ActionResult TransferenciaLead()
         {
             return View();
         }

@@ -1,22 +1,10 @@
-﻿function mascara(o, f) {
-    v_obj = o
-    v_fun = f
-    setTimeout("execmascara()", 1)
-}
-function execmascara() {
-    v_obj.value = v_fun(v_obj.value)
-}
-function mtel(v) {
-    v = v.replace(/D/g, "");             //Remove tudo o que não é dígito
-    v = v.replace(/^(d{2})(d)/g, "($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
-    v = v.replace(/(d)(d{4})$/, "$1-$2");    //Coloca hífen entre o quarto e o quinto dígitos
-    return v;
-}
-function id(el) {
-    return document.getElementById(el);
-}
-window.onload = function () {
-    id('telefone').onkeypress = function () {
-        mascara(this, mtel);
+﻿var options = {
+    onKeyPress: function (cpf, ev, el, op) {
+        var masks = ['000.000.000-000', '00.000.000/0000-00'];
+        $('.cpf').mask((cpf.length > 14) ? masks[1] : masks[0], op);
     }
 }
+
+
+
+$('.cpf').length > 11 ? $('.cpf').mask('00.000.000/0000-00', options) : $('.cpf').mask('000.000.000-00#', options);

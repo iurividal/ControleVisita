@@ -8,6 +8,7 @@ using System.Web;
 using ApiConsorcioNet.Extensoes;
 using OracleContext;
 using Dapper;
+using System.Globalization;
 
 namespace ControleVisita.Models
 {
@@ -76,7 +77,7 @@ namespace ControleVisita.Models
                     {
                         Id = t.CODVISITA,
                         CodGrupo = t.CODGRUPO.ToString(),
-                        IdPessoa = Convert.ToInt32(t.IDPESSOA),
+                        IdPessoa = t.IDPESSOA == null ? 0 : Convert.ToInt32(t.IDPESSOA),
                         Cliente = new PessoaModel
                         {
                             NomeCompleto = t.VISITADO,
@@ -87,7 +88,7 @@ namespace ControleVisita.Models
                             Celular = t.CELULAR,
                             WhatsApp = t.WHATSAPP,
                             Atividade = t.ATIVIDADE,
-                            IdPessoa = Convert.ToInt32(t.IDPESSOA),
+                            IdPessoa = t.IDPESSOA == null ? 0 : Convert.ToInt32(t.IDPESSOA),
 
 
                             Endereco = new EnderecoModel
@@ -131,6 +132,71 @@ namespace ControleVisita.Models
             }
         }
 
+        public IEnumerable<VisitaHistoricoModel> GetHistoricoVisita(int codvisita, int idpessoa, string empresa)
+        {
+            using (var db = new Oracle.ManagedDataAccess.Client.OracleConnection(ApiConsorcioNet.Conexao.ConnectionStrings.AcessoOracleODP(empresa)))
+            {
+                var query = @"SELECT DISTINCT VW.* FROM (
+                            select T.DATA_VISITA,
+                                            T.OBSERVACOES,
+                                            T.MOTIVOVISITA,
+                                            T.PERCEPCAO,
+                                            T.DATA_REAGENDAMENTO,
+                                            T.USUARIOINCLUSAO,
+                                            T.MOTIVO_NAO_VENDA,
+                                            T.MARCABEM,
+                                            T.MODELOBEM,
+                                            T.VALORBEM
+                              from CN_VISITAS T
+                              where t.codvisita = :CODVISITA and t.DTAEXCLUSAO IS NULL
+                              union all 
+                              select T.DATA_VISITA,
+                                            T.OBSERVACOES,
+                                            T.MOTIVOVISITA,
+                                            T.PERCEPCAO,
+                                            T.DATA_REAGENDAMENTO,
+                                            T.USUARIOINCLUSAO,
+                                            T.MOTIVO_NAO_VENDA,
+                                            T.MARCABEM,
+                                            T.MODELOBEM,
+                                            T.VALORBEM
+                              from CN_VISITAS T  
+                             where t.idpessoa = :IDPESSOA AND t.DTAEXCLUSAO IS NULL
+                             order by DATA_VISITA desc) VW";
+
+
+                var response = db.Query(query, new { CODVISITA = codvisita, IDPESSOA = idpessoa });
+
+                List<VisitaHistoricoModel> historicoModels = new List<VisitaHistoricoModel>();
+                foreach (var item in response)
+                {
+                    var visita = new VisitaHistoricoModel();
+
+                    visita.DataVisita = item.DATA_VISITA;
+                    visita.HistoricoVisita = item.OBSERVACOES;
+                    visita.MotivoVisita = item.MOTIVOVISITA;
+                    visita.Percepcao = item.PERCEPCAO;
+                    visita.Usuario = item.USUARIOINCLUSAO;
+                    visita.MotivoNaoVenda = item.MOTIVO_NAO_VENDA;
+                    visita.BemViewModel = new BemViewModel { ValorBem = Convert.ToDecimal(item.VALORBEM), Marca = item.MARCABEM, Modelo = item.MODELOBEM };
+
+                    visita.ValorBem = Convert.ToDecimal(item.VALORBEM);
+                    visita.ValorBemAux = string.Format(CultureInfo.GetCultureInfo("pt-BR"), "{0:C}", visita.ValorBem);
+
+
+                    visita.Agendamento = new AgendaModel
+                    {
+                        DataAgendamento = item.DATA_REAGENDAMENTO
+                    };
+
+                    historicoModels.Add(visita);
+
+                }
+
+                return historicoModels.OrderByDescending(a => a.DataVisita).ToList();
+            }
+        }
+
         public static IEnumerable<VisitaModel> GetVisitas(decimal codgrupo, string empresa, FiltroModelView filtro)
         {
 
@@ -139,12 +205,12 @@ namespace ControleVisita.Models
                 Dapper.Oracle.OracleDynamicParameters param = new Dapper.Oracle.OracleDynamicParameters();
 
                 var vcursor = @"    select distinct CODVISITA,
-                                            COD_GRUPO,
+                                           COD_GRUPO,
                                             DATA_VISITA,
-                                            VISITADO,
-                                            FONE,
-                                            ENDERECO,
-                                            VENDEU,
+                                            NOMECOMPLETO AS VISITADO,
+                                           TELEFONE as FONE,
+                                          logradouro as ENDERECO,
+                                           VENDEU,
                                             MOTIVO_NAO_VENDA,
                                             OBSERVACOES,
                                             DATA_REAGENDAMENTO,
@@ -168,8 +234,48 @@ namespace ControleVisita.Models
                                             COD_GRUPOOUTRO,
                                             DATA_REAGENDAMENTO,
                                             PERCEPCAO,
-                                            CHECK_RESULT
-                              from (select distinct V.*,
+                                            CHECK_RESULT,
+                                            TIPOCONTATO,
+                                            NVL(IDPESSOA,0)IDPESSOA
+                              from (select distinct V.CODVISITA,
+                                                   V.COD_GRUPO,
+                                                   V.DATA_VISITA,   
+                                                   V.VENDEU,
+                                                   V.MOTIVO_NAO_VENDA,
+                                                   V.OBSERVACOES,
+                                                   V.DATA_REAGENDAMENTO,
+                                                   V.DATA_ATUALIZACAO,
+                                                   V.USUARIO_ATUALIZACAO,
+                                                   V.REAGENDAMENTO_REALIZADO,     
+                                                   V.VALORBEM,     
+                                                   V.DTAEXCLUSAO,
+                                                   V.USUARIOEXCLUSAO,
+                                                   V.MARCABEM,
+                                                   V.MODELOBEM,
+                                                   V.DATAINCLUSAO,
+                                                   V.USUARIOINCLUSAO,
+                                                   V.MOTIVOVISITA,
+                                                   V.PERCEPCAO,                                                  
+                                                   V.TIPOCONTATO,
+                                                   vp.idpessoa,
+                                                   vp.nomecompleto,
+                                                   vp.tipopessoa,
+                                                   vp.documento,
+                                                   vp.dddfone,
+                                                   vp.telefone,
+                                                   vp.dddcelular,
+                                                   vp.celular,
+                                                   vp.whatsapp,
+                                                   vp.datanascimento,
+                                                   vp.email,
+                                                   vp.cep,
+                                                   vp.logradouro,
+                                                   vp.uf,
+                                                   vp.cidade,
+                                                   vp.bairro,
+                                                   vp.atividade,
+                                                   vp.informacao,     
+       
                                                     G.COD_GRUPO RESPONSAVEL,
                                                     GRUPOS.NOME,
                                                     GRUPOS.TIPO_GRUPO,
@@ -181,6 +287,7 @@ namespace ControleVisita.Models
                                                     TB.cod_grupo COD_GRUPOOUTRO
                            
                                       from CN_VISITAS V
+                                       INNER JOIN   CN_VISITA_PESSOA VP ON V.IDPESSOA = VP.IDPESSOA
                                      inner join CN_GRUPOS_GEPESSOA G
                                         on G.COD_GRUPO = V.COD_GRUPO
                                       join (select distinct a.seqrevenda,
@@ -227,8 +334,9 @@ namespace ControleVisita.Models
 
                 vcursor += @" and v.dtaexclusao is null)  UNPIVOT(CHECK_RESULT for COD_GRUPOS in(RESPONSAVEL,COORDENADOR_RESPONSAVEL, SUPERVISOR_RESPONSAVEL,
                                                                                                              GERENTE_RESPONSAVEL,
-                                                                                                             ADM_RESPONSAVEL))
-                             where CHECK_RESULT = :CODGRUPOLOGIN";
+                                                                                                             ADM_RESPONSAVEL))VW
+                             where CHECK_RESULT = :CODGRUPOLOGIN
+                             AND DATA_VISITA = (SELECT MAX(VT.DATA_VISITA) FROM CN_VISITAS VT WHERE VT.IDPESSOA = VW.IDPESSOA)";
 
 
                 param.Add("CODGRUPOLOGIN", codgrupo);
@@ -251,6 +359,7 @@ namespace ControleVisita.Models
                         WhatsApp = m.WHATSAPP,
                         Email = m.EMAIL,
                         Atividade = m.ATIVIDADE,
+                        IdPessoa = Convert.ToInt32(m.IDPESSOA),
 
                         Endereco = new EnderecoModel
                         {
@@ -284,8 +393,55 @@ namespace ControleVisita.Models
                     Percepcao = m.PERCEPCAO
                     //IdMotivo = motivos.First(x => x.Motivo == m.MOTIVO_NAO_VENDA).IdMotivo
 
-                }).ToList();
+                }).OrderByDescending(a=>a.DataVisita).ToList();
 
+
+                //AGRUPAMENTO
+
+                //var result = response.GroupBy(a => a.Cliente.IdPessoa)                    
+                //    .Select(m => new VisitaModel
+                //    {
+                //        Cliente = new PessoaModel
+                //        {
+
+                //            NomeCompleto = m.First().Cliente.NomeCompleto,
+                //            DddCelular = m.First().Cliente.DDDFone,
+                //            Celular = m.First().Cliente.Celular,
+                //            Telefone = m.First().Cliente.Telefone,
+                //            WhatsApp = m.First().Cliente.WhatsApp,
+                //            Email = m.First().Cliente.Email,
+                //            Atividade = m.First().Cliente.Atividade,
+                //            IdPessoa = m.Key,
+                //            Endereco = new EnderecoModel
+                //            {
+
+                //                Logradouro = m.First().Cliente.Endereco.Logradouro,
+                //                UF = m.First().Cliente.Endereco.UF,
+                //                Cidade = m.First().Cliente.Endereco.Cidade
+                //            }
+                //        },
+
+                //        Id = m.Max(a => a.Id),
+                //        CodGrupo = m.OrderByDescending(a => a.DataInclusao).First().CodGrupo,
+                //        DataInclusao = m.Max(a => a.DataInclusao),
+                //        DataVisita = m.Max(a => a.DataVisita),
+                //        HistoricoVisita = m.OrderByDescending(a => a.DataInclusao).First().HistoricoVisita,
+                //        NomeVendedor = m.OrderByDescending(a => a.DataInclusao).First().NomeVendedor,
+                //        IsVendaRealizada = m.OrderByDescending(a => a.DataInclusao).First().IsVendaRealizada,
+                //        MotivoNaoVenda = m.OrderByDescending(a => a.DataInclusao).First().MotivoNaoVenda,
+                //        IdPessoa = m.Key,
+                //        Agendamento = new AgendaModel
+                //        {
+                //            DataAgendamento = m.OrderByDescending(a => a.DataVisita).First().Agendamento.DataAgendamento,
+                //        },
+                //        Percepcao = m.OrderByDescending(a => a.DataInclusao).First().Percepcao,
+                //        QtdVisita = m.Count(),
+                //        MotivoVisita = m.OrderByDescending(a => a.DataInclusao).First().MotivoVisita,
+                //        Usuario = m.OrderByDescending(a => a.DataInclusao).First().Usuario,
+                //        BemViewModel = m.OrderByDescending(a => a.DataInclusao).First().BemViewModel,
+
+
+                //    }).ToList().Where(a => a.Cliente.IdPessoa == 1703);
 
                 return response;
             }
@@ -423,13 +579,18 @@ namespace ControleVisita.Models
                 try
                 {
 
-                    var entity = new CNVISITA();
 
-                    //var visita = db.CNVISITAs.FirstOrDefault(a => a.CODVISITA == model.Id);
+                    var visitas = db.CNVISITAs.Where(a => a.CODVISITA == model.Id && a.IDPESSOA == null);
+                    foreach (var item in visitas)
+                    {
+                        item.IDPESSOA = model.Cliente.IdPessoa;
+                        db.SubmitChanges();
+                    }
+
 
                     //if (visita == null)
                     //{
-
+                    var entity = new CNVISITA();
                     entity.CODVISITA = db.CNVISITAs.Max(a => a.CODVISITA) + 1;
                     entity.VISITADO = model.Cliente.NomeCompleto;
                     entity.VENDEU = !string.IsNullOrEmpty(model.MotivoNaoVenda) ? "0" : "1";
@@ -459,6 +620,9 @@ namespace ControleVisita.Models
                     entity.MOTIVOVISITA = model.MotivoVisita;
                     entity.PERCEPCAO = model.Percepcao;
                     entity.IDPESSOA = model.Cliente.IdPessoa;
+                    entity.TIPOCONTATO = model.TipoContato;
+                    entity.VENDAQTD = model.QtdCotaVenda;
+                    entity.VENDAVALOR = model.ValorVenda;
                     db.CNVISITAs.InsertOnSubmit(entity);
 
                     db.SubmitChanges();

@@ -44,67 +44,70 @@
 </head>
 
 <body style="padding-top: 1rem;">
-    @*
+
+    @if (Utils.fBrowserIsMobile() && User.Identity.IsAuthenticated)
+    {
+
         <nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-md">
-              <a class="navbar-brand" href="/">Controle Visita</a>
+            <a class="navbar-brand" href="/">Controle Visita</a>
 
-              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-             <div id="navbar" class="collapse navbar-collapse">
-                  <ul class="navbar-nav mr-auto">
-                      <li class="active nav-item"><a href="#" class="nav-link">Home</a></li>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="active nav-item"><a href="#" class="nav-link">Home</a></li>
 
-                      <li class="nav-item dropdown">
-                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Cadastrar
-                          </a>
-                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Cadastrar
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                              <div class="dropdown-divider"></div>
-                              @Html.ActionLink("Visitas", "Cadastrar", "Visita", null, new { @class = "dropdown-item" })
-                          </div>
-                      </li>
+                            <div class="dropdown-divider"></div>
+                            @Html.ActionLink("Visitas", "Cadastrar", "Visita", null, new { @class = "dropdown-item" })
+                        </div>
+                    </li>
 
-                      <li class="nav-item dropdown">
-                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Consultar
-                          </a>
-                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Consultar
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                              <div class="dropdown-divider"></div>
-                              @Html.ActionLink("Visitas", "ListaVisita", "Visita", null, new { @class = "dropdown-item" })
-                          </div>
-                      </li>
+                            <div class="dropdown-divider"></div>
+                            @Html.ActionLink("Visitas", "ListaVisita", "Visita", null, new { @class = "dropdown-item" })
+                        </div>
+                    </li>
 
-                      <li class="nav-item dropdown">
-                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Gestão
-                          </a>
-                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-
-                              @Html.ActionLink("Motivos não venda", "MotivoNaoVenda", "Gestao", null, new { @class = "dropdown-item" })
-                              <div class="dropdown-divider"></div>
-                              @Html.ActionLink("Vendas Mês a Mês", "Vendas", "Gestao", null, new { @class = "dropdown-item" })
-                          </div>
-
-                      </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Gestão
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
 
-                  </ul>
-                  <ul class="navbar-nav ml-auto">
-                      <li class="nav-item">
-                          @Html.ActionLink("Sair", "Sair", "Login", null, new { @class = "nav-link" })
-                      </li>
-                  </ul>
-              </div>
-          </nav>*@
+                            @Html.ActionLink("Motivos não venda", "MotivoNaoVenda", "Gestao", null, new { @class = "dropdown-item" })
+                            <div class="dropdown-divider"></div>
+                            @Html.ActionLink("Vendas Mês a Mês", "Vendas", "Gestao", null, new { @class = "dropdown-item" })
+                        </div>
+
+                    </li>
 
 
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        @Html.ActionLink("Sair", "Sair", "Login", null, new { @class = "nav-link" })
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-    <main role="main" class="container">
+    }
+
+    <main role="main" class="container-fluid">
 
 
         @RenderBody()
@@ -115,13 +118,51 @@
         </div>
 
 
+        <script src="https://unpkg.com/devextreme-intl/dist/devextreme-intl.min.js"></script>
+        <script>
+        DevExpress.localization.locale("pt");
 
+         function AlertError(msg) {
+            DevExpress.ui.notify({
+                message: msg,
+                type: "error",
+                displayTime: 3000,
+                height: 100
+            });
+        }
+
+        function AlertSucess(msg) {
+            DevExpress.ui.notify({
+                message: msg,
+                type: "Sucess",
+                displayTime: 3000,
+                height: 100,
+
+            });
+        }
+
+        function Notificacao(type, msg) {
+            DevExpress.ui.notify({
+                message: msg,
+                type: "Sucess",
+                displayTime: 3000,
+                height: 100,
+
+            })
+        }
+
+        function HomePage() {
+
+            var url = '@Url.Action("Index","Home")';
+            window.location = url;
+        }
+
+        </script>
     </main>
 
-    <script src="https://unpkg.com/devextreme-intl/dist/devextreme-intl.min.js"></script>
-    <script>
-        DevExpress.localization.locale("pt");
-    </script>
+
+
+
 </body>
 
 </html>

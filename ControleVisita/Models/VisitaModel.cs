@@ -30,6 +30,11 @@ namespace ControleVisita.Models
         public string MotivoVisita { get; set; }
 
 
+        [Required(ErrorMessage = "Informe o tipo contato")]
+        [DisplayName("Forma de contato")]
+        public string TipoContato { get; set; }
+
+
         [DataType(DataType.Currency)]
         [DisplayName("Valor de Bem (R$)")]
         public decimal? ValorBem { get; set; }
@@ -43,11 +48,19 @@ namespace ControleVisita.Models
         [DisplayName("Venda Realizada")]
         public string VendaRealizadaStr => IsVendaRealizada == true ? "SIM" : "NÃO";
 
-        [DisplayName("Histórico da Visita")]
+        [DisplayName("Histórico")]
         public string HistoricoVisita { get; set; }
 
         [DisplayName("Por que não vendeu?")]
         public string MotivoNaoVenda { get; set; }
+
+        public string Venda { get; set; }
+
+        public decimal? ValorVenda { get; set; }
+
+        public string ValorVendaStr { get;set; }
+
+        public int QtdCotaVenda { get; set; }
 
         public int IdMotivo { get; set; }
 
@@ -66,6 +79,8 @@ namespace ControleVisita.Models
         public string Percepcao { get; set; }
 
         public int IdPessoa { get; set; }
+
+        public decimal QtdVisita { get; set; }
     }
 
 

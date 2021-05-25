@@ -13,13 +13,10 @@ namespace ControleVisita.Models
 
         public LoginModel Logar(LoginModel login)
         {
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(login.Empresa)))
             {
-
-
-
                 var response = db.WEBLOGINs
-                    .FirstOrDefault(a => a.LOGIN == login.Login && a.SENHA == login.Password);
+    .FirstOrDefault(a => a.LOGIN == login.Login && a.SENHA == login.Password);
 
 
                 if (response != null)
@@ -30,7 +27,7 @@ namespace ControleVisita.Models
                     var cookie = new HttpCookie("VP")
                     {
                         // Value = "CMC+9+LEANDRO.AMARAL+11",
-                        Value = $"CMC+{response.CODLOGIN}+{response.LOGIN}+{grupo.TIPOGRUPO}",
+                        Value = $"{login.Empresa}+{response.CODLOGIN}+{response.LOGIN}+{grupo.TIPOGRUPO}",
                         Expires = DateTime.Now.AddMinutes(20),
                         HttpOnly = true
                     };
@@ -47,6 +44,8 @@ namespace ControleVisita.Models
         {
 
             var response = getPropriedadeCookie("VP");
+
+
             return response;
 
         }
@@ -56,10 +55,14 @@ namespace ControleVisita.Models
             var cookie = HttpContext.Current.Request.Cookies[nomeCookie] ?? new HttpCookie(nomeCookie)
             {
 
-               //Value = "CMC+6578+RUBEN.REIS+25",
-                 Value = "CMC+9+LEANDRO.AMARAL+11",
-               // Value = "CNMF+27403+FELIPE.LOPES+1",
+                //Value = "CMC+6578+RUBEN.REIS+25",
+                //Value = "CMC+9+LEANDRO.AMARAL+11",
+                // Value = "CNMF+27403+FELIPE.LOPES+1",
+                 Value = "CNMF+27514+JOAO.CUSTODIO+4",
                 // Value = "CMC+6516+SILVANA.SILVA+6",
+               // Value = "CMC+6596+JEAN.PARAGUAI+25",
+                //Value = "CMC+6579+LEONARDO.GIMENEZ+26",
+                // Value = "CMC+6466+FABYANE.MUNIZ+25",
                 // Value = "CMC+6573+JOACAZ.MARTINS+25",
 
                 Expires = DateTime.Now.AddMinutes(20),
@@ -94,6 +97,20 @@ namespace ControleVisita.Models
             using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(model.Empresa)))
             {
                 model.CodGrupo = db.WEBLOGINs.First(a => a.CODLOGIN == Convert.ToDecimal(model.CodLogin)).CODGRUPO.ToString();
+
+                model.SubEmpresaPermissao = string.Join(";", (from d in db.CNGRUPOSGEPESSOAs
+                                                              where d.CODGRUPO == Convert.ToDecimal(model.CodGrupo)
+                                                              && d.SITGRUPO == 1
+                                                              select new
+                                                              {
+                                                                  d.SEQREVENDA
+
+                                                              }).ToList()
+                                             .Select(a => new
+                                             {
+                                                 MARCA = db.FBUSCAMARCACOD(model.Empresa, a.SEQREVENDA)
+
+                                             }).GroupBy(a => a.MARCA).Select(a => a.Key));
             }
 
             return model;

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace ControleVisita.Controllers
@@ -20,7 +21,7 @@ namespace ControleVisita.Controllers
         }
 
         // GET api/<controller>/5
-        public HttpResponseMessage Get(decimal codgrupo, string empresa, DataSourceLoadOptions loadOptions)
+        public async Task<HttpResponseMessage> Get(decimal codgrupo, string empresa, DataSourceLoadOptions loadOptions)
         {
             FiltroModelView filtroModel = new FiltroModelView
             {
@@ -31,9 +32,8 @@ namespace ControleVisita.Controllers
             };
 
 
-            var response = VisitaViewModel
-               .GetVisitas(codgrupo, empresa, filtroModel)
-               .OrderByDescending(a => a.Agendamento.DataAgendamento).ToList();
+            var response = await Task.FromResult(VisitaViewModel.GetVisitas(codgrupo, empresa, filtroModel)
+                                     .OrderByDescending(a => a.Agendamento.DataAgendamento).ToList());
 
 
 

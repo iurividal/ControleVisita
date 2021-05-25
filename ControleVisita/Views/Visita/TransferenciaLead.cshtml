@@ -1,0 +1,83 @@
+﻿@using ControleVisita.Models.IdentityExtensions
+@{
+    ViewBag.Title = "TransferenciaLead";
+}
+
+<h2>TransferenciaLead</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-header">Filtros</div>
+
+        <div class="card-body">
+            <div class="form-row">
+
+                <div class="form-group col-md-4">
+
+                    Data Visita Inicial:
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("DataVisitaInicial")
+
+
+                </div>
+
+                <div class="form-group col-md-4">
+
+                    Data Visita Final:
+                    @Html.DevExtreme().DateBox().Name("DataVisitaFinal").Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy")
+
+                </div>
+
+                <div class="form-inline col-md-4">
+                    Somente Vendida:
+                    @Html.DevExtreme().CheckBox().Name("isVendaRealizada").Value(false)
+
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    Data Reagendamento de:
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("DataReagentamentoInicial")
+                </div>
+                <div class="form-group col-md-4">
+                    Data Reagendamento até:
+                    @Html.DevExtreme().DateBox().Type(DateBoxType.Date).DisplayFormat("dd/MM/yyyy").Name("DataReagentamentoFinal")
+                </div>
+
+                <div class="form-group col-md-4">
+                    Responsável:
+                    @(Html.DevExtreme().Lookup().Name("Vendedor").ID("Vendedor")
+                .DataSource(ds=>ds.WebApi()
+                    .RouteName("selectbox")
+                    .LoadAction("GetVendedores")
+                    .LoadParams(new  {empresa= User.Identity.GetEmpresa(),codgrupo = User.Identity.Getcodgrupo() })
+                    .LoadMode(DataSourceLoadMode.Raw)
+                )
+                .DisplayExpr("Nome")
+                .ValueExpr("CodGrupo")
+                .SearchMode(DropDownSearchMode.Contains)
+                .SearchEnabled(true))
+                </div>
+
+
+            </div>
+
+            <div class="form-row">
+                <div class="form-inline col-md-12">
+
+                    <button class="btn btn-primary">Pesquisar</button>
+
+                </div>
+            </div>
+
+        </div>
+  
+    </div>
+}
+
+
+

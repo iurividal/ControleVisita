@@ -6,47 +6,55 @@
     ViewBag.BomDia = DateTime.Now.Hour < 12 ? "BOM DIA" : DateTime.Now.Hour < 18 ? "BOA TARDE" : "BOA NOITE";
 }
 
-<div class="h4 card-title">@ViewBag.BomDia  @ViewBag.Usuario !</div>
+<div class="h4 card-title">@ViewBag.BomDia  @ViewBag.Usuario!</div>
 
 
-<div class="card">
-    <div class="card-header">Atalhos</div>
-    <div class="card-body">
+@if (!Utils.fBrowserIsMobile())
+{
+    <div class="card">
+        <div class="card-header">Atalhos</div>
+        <div class="card-body">
 
-        <div class="row" style="text-align:center">
+            <div class="row" style="text-align:center">
 
-            <div class="col-sm-3 col-md-2 ">
-                <a href="@Url.Action("Cadastrar","Visita")"> <img src="~/Content/Imagem/Home_48px.png" /><br /> Cadastrar  Visita </a>
+                <div class="col-sm-3 col-md-2 ">
+                    <a href="@Url.Action("Cadastrar", "Visita")"> <img src="~/Content/Imagem/Home_48px.png" /><br /> Cadastrar  Visita </a>
 
-                @*@Html.ActionLink("Cadastrar  Visita", "Cadastrar", "Visita", null, new { @class = "imghome" })*@
+                    @*@Html.ActionLink("Cadastrar  Visita", "Cadastrar", "Visita", null, new { @class = "imghome" })*@
+                </div>
+
+                <div class="col-sm center">
+                    <a href="@Url.Action("ListaVisita", "Visita")"> <img src="~/Content/Imagem/Search_48px.png" /> <br /> Consultar Visitas </a>
+
+                </div>
+
+                @*<div class="col-sm-3 col-md-2 center">
+                        <a href="@Url.Action("Index","Clientes")"> <img src="~/Content/Imagem/contacts_48px.png" /> <br /> Clientes </a>
+                    </div>*@
+
+                <div class="col-sm center">
+
+                    <a href="@Url.Action("MotivoNaoVenda", "Gestao")"> <img src="~/Content/Imagem/Chart_48px.png" /> <br /> Motivos não venda </a>
+
+                </div>
+
+                <div class="col-sm center">
+                    <a href="@Url.Action("Vendas", "Gestao")"> <img src="~/Content/Imagem/venda_mes.png" /> <br /> Vendas mês a mês </a>
+
+                </div>
+
+                <div class="col-sm center">
+                    <a href="@Url.Action("Sair", "Login")"> <img src="~/Content/Imagem/sair.png" /> <br /> Sair </a>
+
+                </div>
+
+
+
             </div>
-
-            <div class="col-sm-3 col-md-2 center">
-                <a href="@Url.Action("ListaVisita","Visita")"> <img src="~/Content/Imagem/Search_48px.png" /> <br /> Consultar Visitas </a>
-
-            </div>
-
-            <div class="col-sm-3 col-md-2 center">
-
-                <a href="@Url.Action("MotivoNaoVenda","Gestao")"> <img src="~/Content/Imagem/Chart_48px.png" /> <br /> Motivos não venda </a>
-
-            </div>
-
-            <div class="col-sm-3 col-md-2 center">
-                <a href="@Url.Action("Vendas","Gestao")"> <img src="~/Content/Imagem/venda_mes.png" /> <br /> Vendas mês a mês </a>
-
-            </div>
-
-
 
         </div>
-
-
-
-
     </div>
-</div>
-
+}
 
 <div class="">
     <br />

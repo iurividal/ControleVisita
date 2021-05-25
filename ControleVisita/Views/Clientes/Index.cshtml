@@ -1,18 +1,21 @@
 @using ControleVisita.Models
-
+@using ControleVisita.Models.IdentityExtensions
 @{
     ViewBag.Title = "Clientes";
 }
 
-<div class="h3">Lista de Cliente</div>
+
+
+<div class="h3">Lista de Clientes</div>
 
 
 @(Html.DevExtreme().DataGrid<ControleVisita.Models.PessoaModel>()
   .DataSource(ds => ds.WebApi()
-      .Controller("Cliente").Key("IdPessoa")
+      .Controller("clientes").Key("IdPessoa")
       .LoadAction("Get")
       .UpdateAction("Put").Key("IdPessoa")
       .DeleteAction("Delete").Key("IdPessoa")
+      .LoadParams(new{empresa= User.Identity.GetEmpresa(),usuario= ""})
   )
   .RemoteOperations(true)
   .Columns(columns =>
@@ -24,12 +27,14 @@
 
       columns.AddFor(m => m.TipoPessoa).Visible(false);
 
-      columns.AddFor(m => m.Documento);
+      columns.AddFor(m => m.Documento).Visible(false);
 
       columns.AddFor(m => m.DDDFone);
+
       columns.AddFor(m => m.Telefone);
 
       columns.AddFor(m => m.DddCelular);
+
       columns.AddFor(m => m.Celular);
 
 
@@ -53,4 +58,3 @@
       .ShowBorders(true)
 
 )
-

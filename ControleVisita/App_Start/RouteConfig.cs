@@ -7,14 +7,23 @@ namespace ControleVisita {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 
+            routes.MapRoute(
+               name: "Detault",
+               url: "{controller}/{action}/{id}",
+               defaults: new { controller = "Login", action = "Index", id = UrlParameter.Optional }
+           );
 
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
+                name: "Maggi",
+                url: "restrito2.consorciomaggi.com.br:1455/{controller}/{action}/{id}",
                 defaults: new { controller = "Login", action = "Index", id = UrlParameter.Optional }
-             
-
             );
+
+            routes.MapRoute(
+              name: "Default",
+              url: "restrito.cnmf.com.br:1455/{controller}/{action}/{id}",
+              defaults: new { controller = "Login", action = "Index", id = UrlParameter.Optional }
+          );
         }
     }
 }

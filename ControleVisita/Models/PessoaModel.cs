@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using ApiConsorcioNet.Extensoes;
 using ControleVisita.Models.Enum;
 
 namespace ControleVisita.Models
@@ -10,9 +11,7 @@ namespace ControleVisita.Models
     public class PessoaModelList : List<PessoaModel> { }
     public class PessoaModel
     {
-        [Key]
-        [Display(AutoGenerateField = true)]
-        [ReadOnly(true)]
+
         [DisplayName("Id")]
         public int IdPessoa { get; set; }
 
@@ -25,31 +24,24 @@ namespace ControleVisita.Models
         public string Sobrenome { get; set; }
 
         [DisplayName("Tipo de Pessoa")]
-        public TipoPessoa TipoPessoa { get; set; }
+        public string TipoPessoa { get; set; }
 
         [DisplayName("CPF ou CNPJ")]
         public string Documento { get; set; }
 
-
-        private string _tefoneFields = "";
-
         [DisplayName("Telefone")]
-        public string Telefone { get => _tefoneFields; set => _tefoneFields = value; }
+        public string Telefone { get; set; }
 
-
-        private string _dddFoneFields = "";
         [DisplayName("DDD Tel.")]
-        public string DDDFone { get => !string.IsNullOrEmpty(Telefone) ? Telefone.Substring(0, 2) : ""; set => _dddFoneFields = value; }
+        public string DDDFone { get; set; }
 
 
-        private string _dddCelularFields = "";
         [DisplayName("DDD Cel.")]
-        public string DddCelular { get => !string.IsNullOrEmpty(Celular) ? Celular.Substring(0, 2) : ""; set => _dddCelularFields = value; }
+        public string DddCelular { get; set; }
 
-      
-        [Required(ErrorMessage = "Informe o número do celular")]
+
         [DisplayName("Celular")]
-        public string Celular { get; set; } = "";
+        public string Celular { get; set; }
 
         [DisplayName("WhatsApp")]
         public string WhatsApp { get; set; }
@@ -72,5 +64,7 @@ namespace ControleVisita.Models
 
         [DisplayName("Informações")]
         public string Informacao { get; set; }
+
+        public string Grupo { get; set; }// NomeCompleto.ToUpper().Substring(0, 1);
     }
 }

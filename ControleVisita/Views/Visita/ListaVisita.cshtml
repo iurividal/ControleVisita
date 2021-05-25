@@ -128,7 +128,7 @@
 
             columns.Add().Caption("").CellTemplate(@<text>
 
-                                                             <a href="@Url.Action("Cadastrar", "Visita")?p=<%= data.Id%>" class="dx-icon-edit"></a>
+                                                             <a href="@Url.Action("Cadastrar", "Visita")?p=<%= data.Id%>" ><i class="fas fa-plus-circle"></i></a>
 
                                                           </text>).VisibleIndex(0).Width(50);
         columns.AddFor(m => m.Id).Visible(false).AllowEditing(false).Width(80).VisibleIndex(0);
@@ -147,29 +147,29 @@
         columns.AddFor(m => m.Cliente.Endereco.Logradouro).Caption("Logradouro").Visible(false).VisibleIndex(13);
 
 
-            columns.AddFor(m => m.MotivoNaoVenda)
-                .Lookup(l => l.DataSource(w => w.WebApi().Controller("MotivoApi")
-                    .LoadAction("Get")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("Motivo")
-                    ).ValueExpr("Motivo")
-                    .DisplayExpr("Motivo")
+        columns.AddFor(m => m.MotivoNaoVenda)
+            .Lookup(l => l.DataSource(w => w.WebApi().Controller("MotivoApi")
+                .LoadAction("Get")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("Motivo")
+                ).ValueExpr("Motivo")
+                .DisplayExpr("Motivo")
 
-                ).VisibleIndex(14);
-
-
-
-
-            columns.AddFor(m => m.Agendamento.DataAgendamento).VisibleIndex(14)
-                .Caption("Data Reagendamento").DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Width(100);
+            ).VisibleIndex(14);
 
 
 
-            columns.AddFor(m => m.BemViewModel.Marca).Visible(false).VisibleIndex(15);
-            columns.AddFor(m => m.BemViewModel.Modelo).Visible(false).VisibleIndex(16);
+
+        columns.AddFor(m => m.Agendamento.DataAgendamento).VisibleIndex(14)
+            .Caption("Data Reagendamento").DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Width(100);
 
 
-            columns.AddFor(m => m.ValorBem).VisibleIndex(17).Name("vlr_bem").CssClass("money").CalculateCellValue(@<text>
+
+        columns.AddFor(m => m.BemViewModel.Marca).Visible(false).VisibleIndex(15);
+        columns.AddFor(m => m.BemViewModel.Modelo).Visible(false).VisibleIndex(16);
+        columns.AddFor(m => m.QtdVisita).Visible(false);
+
+        columns.AddFor(m => m.ValorBem).VisibleIndex(17).Name("vlr_bem").CssClass("money").CalculateCellValue(@<text>
 
                                                                    function(data){
                                                                    return  [data.ValorBem].toLocaleString('pt-br', { minimumFractionDigits: 2 })
@@ -183,6 +183,7 @@
 
             columns.AddFor(m => m.Cliente.Atividade).Visible(false);
             columns.AddFor(m => m.NomeVendedor).Visible(false);
+           
 
         })
     .ShowBorders(true)

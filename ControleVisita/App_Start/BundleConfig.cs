@@ -17,20 +17,38 @@ namespace ControleVisita {
                 .Include("~/Scripts/jquery.mask.js");
            
 
-            // Bootstrap
+            // jqeury validadte
             scriptBundle
                 .Include("~/Scripts/bootstrap.js");
+
+            scriptBundle
+              .Include("~/Scripts/jquery.validate.js");
+            
+            scriptBundle
+              .Include("~/Scripts/jquery.validate.pt-br.js");
+
+            scriptBundle
+           .Include("~/Scripts/Mascara.js");
+
+            scriptBundle
+           .Include("~/Scripts/toastr.js");
 
             // Bootstrap
             styleBundle
                 .Include("~/Content/bootstrap.css");
 
+            styleBundle
+               .Include("~/Content/validate.css");
+
             // Custom site styles
             styleBundle
                 .Include("~/Content/Site.css");
 
+            styleBundle
+                .Include("~/Content/toastr.css");
 
-           
+
+
 
 
             bundles.Add(scriptBundle);

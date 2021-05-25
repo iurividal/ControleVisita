@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ApiConsorcioNet.Extensoes;
 using OracleContext;
 
 namespace ControleVisita.Models
@@ -10,11 +11,25 @@ namespace ControleVisita.Models
     public class ClienteData
     {
 
-        public static async Task<IEnumerable<PessoaModel>> Get()
+        public static async Task<IEnumerable<PessoaModel>> Get(string empresa, string usuario, string subempresa)
         {
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
             {
-                var result = await Task.FromResult(db.CNVISITAPESSOAs);
+                var results = await Task.FromResult(db.CNVISITAPESSOAs);
+
+
+                var usuarioPermissao = "";
+                if (!string.IsNullOrEmpty(usuario))
+                {
+                    usuarioPermissao = db.WEBLOGINs.First(a => a.CODGRUPO == Convert.ToDecimal(usuario)).LOGIN;
+                }
+
+                var empresaPermissaoColletion = subempresa.Split(';').ToArray();
+
+                var result = results
+                    .Where(a => empresaPermissaoColletion.Contains(a.CODEMPRESA.ToString()))
+                    .WhereIf(!string.IsNullOrEmpty(usuario), x => x.USUARIOINCLUSAO == usuarioPermissao);
+
 
                 List<PessoaModel> responseList = new List<PessoaModel>();
 
@@ -32,7 +47,7 @@ namespace ControleVisita.Models
                         DDDFone = a.DDDFONE,
                         Telefone = a.TELEFONE,
                         Documento = a.DOCUMENTO,
-                        TipoPessoa = a.TIPOPESSOA == "F" ? Enum.TipoPessoa.Fisica : Enum.TipoPessoa.Juridica,
+                        TipoPessoa = a.TIPOPESSOA,
                         Email = a.EMAIL,
                         WhatsApp = a.WHATSAPP,
                         Endereco = new EnderecoModel
@@ -47,16 +62,21 @@ namespace ControleVisita.Models
                     });
                 });
 
-                return responseList;
+                return responseList.OrderBy(a => a.NomeCompleto);
             }
 
         }
 
-        public static async Task<PessoaModel> Get(int id)
+        public static async Task<PessoaModel> Get(int id, string empresa)
         {
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
             {
-                var a = await Task.FromResult(db.CNVISITAPESSOAs.First(b => b.IDPESSOA == id));
+                var a = await Task.FromResult(db.CNVISITAPESSOAs.FirstOrDefault(b => b.IDPESSOA == id));
+
+
+                if (a == null)
+                    return new PessoaModel();
+
 
                 var pessoa = new PessoaModel
                 {
@@ -68,7 +88,7 @@ namespace ControleVisita.Models
                     DDDFone = a.DDDFONE,
                     Telefone = a.TELEFONE,
                     Documento = a.DOCUMENTO,
-                    TipoPessoa = a.TIPOPESSOA == "F" ? Enum.TipoPessoa.Fisica : Enum.TipoPessoa.Juridica,
+                    TipoPessoa = a.TIPOPESSOA,
                     Email = a.EMAIL,
                     WhatsApp = a.WHATSAPP,
                     Endereco = new EnderecoModel
@@ -80,6 +100,7 @@ namespace ControleVisita.Models
                     },
                     IdPessoa = Convert.ToInt32(a.IDPESSOA),
                     Informacao = a.INFORMACAO
+                    
                 };
 
                 return pessoa;
@@ -87,11 +108,11 @@ namespace ControleVisita.Models
 
         }
 
-        public static async Task AddOrUpdate(PessoaModel model)
+       
+        public static async Task AddOrUpdate(PessoaModel model, string empresa, int codsubempresa)
         {
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
             {
-
                 var dados = Newtonsoft.Json.JsonConvert.SerializeObject(model);
 
                 var result = await Task.FromResult(db.CNVISITAPESSOAs.Where(a => a.IDPESSOA == model.IdPessoa));
@@ -100,9 +121,10 @@ namespace ControleVisita.Models
                 {
                     result.ToList().ForEach(item =>
                     {
-                        item.NOMECOMPLETO = model.NomeCompleto;
+                        item.NOMECOMPLETO = model.NomeCompleto.Trim().ToUpper();
                         item.DDDFONE = model.DDDFone;
                         item.TELEFONE = model.Telefone;
+                        item.TIPOPESSOA = model.TipoPessoa;
                         item.LOGRADOURO = model.Endereco.Logradouro;
                         item.CIDADE = model.Endereco.Cidade;
                         item.DATANASCIMENTO = model.DataNascimento;
@@ -120,7 +142,7 @@ namespace ControleVisita.Models
                 {
                     CNVISITAPESSOA cNVISITAPESSOA = new CNVISITAPESSOA
                     {
-                        NOMECOMPLETO = model.NomeCompleto,
+                        NOMECOMPLETO = model.NomeCompleto.ToUpper(),
                         DOCUMENTO = model.Documento,
                         TIPOPESSOA = model.TipoPessoa.ToString(),
                         DDDFONE = model.DDDFone,
@@ -138,7 +160,8 @@ namespace ControleVisita.Models
                         ATIVIDADE = model.Atividade,
                         INFORMACAO = model.Informacao,
                         DTAINCLUSAO = DateTime.Now,
-                        USUARIOINCLUSAO = ""
+                        USUARIOINCLUSAO = "",
+                        CODEMPRESA = codsubempresa
                     };
 
                     db.CNVISITAPESSOAs.InsertOnSubmit(cNVISITAPESSOA);
@@ -150,9 +173,9 @@ namespace ControleVisita.Models
         }
 
 
-        public static async Task Delete(int idpessoa)
+        public static async Task Delete(int idpessoa, string empresa)
         {
-            using (var db = new OracleDataContext())
+            using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
             {
                 var response = db.CNVISITAPESSOAs.First(e => e.IDPESSOA == idpessoa);
 
@@ -177,8 +200,8 @@ namespace ControleVisita.Models
         {
             var list = new[]
             {
-                new SelectListItem { Value = "1", Text = "Pessoa Física" },
-                new SelectListItem { Value = "2", Text = "Pessoa Jurídica" }
+                new SelectListItem { Value = "F", Text = "Física" },
+                new SelectListItem { Value = "J", Text = "Jurídica" }
 
             };
 

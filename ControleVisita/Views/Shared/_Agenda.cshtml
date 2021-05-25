@@ -12,7 +12,9 @@
         .UpdateAction(false)
         .InsertAction(false)
         .OnBeforeSend("OnBeforeSend")
+
     )
+   // .AdaptivityEnabled(true)
     .TimeZone("E. South America Standard Time")
     .DateSerializationFormat("yyyy-MM-ddTHH:mm:ssZ")
     .RemoteFiltering(true)
@@ -26,7 +28,7 @@
   .Resources(rs =>
   {
       rs.Add().DataSource(ds => ds.WebApi()
-      
+
       .Controller("agendaResources")
       .LoadMethod("GET"))
       .ColorExpr("Color")
@@ -42,7 +44,7 @@
         editing.AllowResizing(false);
         editing.AllowDragging(false);
     })
-    
+
 
     .CurrentView(SchedulerViewType.Month)
     .CurrentDate(DateTime.Now)
@@ -58,13 +60,27 @@
     .ShowCurrentTimeIndicator(false)
     // .OnAppointmentDblClick("OnAppointmentClick")
     .OnAppointmentFormOpening("OnAppointmentFormOpening")
-    
+
 
 )
 
+@(Html.DevExtreme().SpeedDialAction()
+    .ID("speedDialAction")
+    .Icon("plus")
+    .OnClick("onPlusClick")
+)
+
+
+
 <script>
 
-    function OnBeforeSend(r,s) {
+    function onPlusClick(e) {
+       // $("#scheduler").dxScheduler("instance").showAppointmentPopup();
+
+        window.location.href = 'Visita/Cadastrar?';
+    }
+
+    function OnBeforeSend(r, s) {
         s.header = {};
     }
 

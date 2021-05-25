@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security.Claims;
@@ -23,7 +24,10 @@ namespace ControleVisita
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             DevExtremeBundleConfig.RegisterBundles(BundleTable.Bundles);
+
         }
+
+      
 
         protected void Application_BeginRequest()
         {

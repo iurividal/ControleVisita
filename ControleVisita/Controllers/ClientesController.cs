@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using ControleVisita.Models;
+using ControleVisita.Models.IdentityExtensions;
 
 namespace ControleVisita.Controllers
 {
@@ -9,18 +11,21 @@ namespace ControleVisita.Controllers
         // GET: Clientes
         public ActionResult Index()
         {
-            return View(ClienteData.Get());
+            return View(ClienteData.Get(User.Identity.GetEmpresa(), User.Identity.Getcodgrupo().ToString(), User.Identity.GetEmpresaPermissao()));
         }
 
-        public ActionResult Cadastrar(string returnUrl)
+        public ActionResult Cadastrar(int idpessoa, string returnUrl)
         {
 
             ViewBag.ListTipoPessoa = Models.ClienteData.GetTipoPessoa();
 
-            TempData["ReturnUrl"] = returnUrl;
-
-
             var model = new PessoaModel();
+            if (idpessoa != 0)
+            {
+                model = ClienteData.Get(idpessoa, User.Identity.GetEmpresa()).Result;
+            }
+
+            TempData["ReturnUrl"] = returnUrl;
 
             return View(model);
         }
@@ -32,11 +37,12 @@ namespace ControleVisita.Controllers
 
             if (ModelState.IsValid)
             {
-                ClienteData.AddOrUpdate(model).Wait();
+
+                var codsubempresa = Convert.ToInt32(User.Identity.GetEmpresaPermissao().Split(';')[0]);
+                ClienteData.AddOrUpdate(model, User.Identity.GetEmpresa(), codsubempresa).Wait();
 
                 if (TempData["ReturnUrl"] != null)
                     return Redirect(TempData["ReturnUrl"].ToString());
-
 
                 ViewBag.Msg = "Cadastro com Sucesso";
             }

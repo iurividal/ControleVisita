@@ -39,7 +39,7 @@ namespace ControleVisita.Models
 
                     responseList.Add(new PessoaModel
                     {
-                        NomeCompleto = a.NOMECOMPLETO,
+                        NomeCompleto = (a.STATUS == "Inativo" ? "(Inativo) " : "") + a.NOMECOMPLETO,
                         Atividade = a.ATIVIDADE,
                         DataNascimento = a.DATANASCIMENTO,
                         DddCelular = a.DDDCELULAR,
@@ -58,7 +58,8 @@ namespace ControleVisita.Models
                             UF = a.UF
                         },
                         IdPessoa = Convert.ToInt32(a.IDPESSOA),
-                        Informacao = a.INFORMACAO
+                        Informacao = a.INFORMACAO,
+                        Status = a.STATUS
                     });
                 });
 
@@ -99,8 +100,9 @@ namespace ControleVisita.Models
                         UF = a.UF
                     },
                     IdPessoa = Convert.ToInt32(a.IDPESSOA),
-                    Informacao = a.INFORMACAO
-                    
+                    Informacao = a.INFORMACAO,
+                    Status = a.STATUS
+
                 };
 
                 return pessoa;
@@ -108,7 +110,7 @@ namespace ControleVisita.Models
 
         }
 
-       
+
         public static async Task AddOrUpdate(PessoaModel model, string empresa, int codsubempresa)
         {
             using (var db = new OracleDataContext(ApiConsorcioNet.Conexao.ConnectionStrings.Acesso(empresa)))
@@ -133,6 +135,7 @@ namespace ControleVisita.Models
                         item.CEP = model.Endereco.Cep;
                         item.ATIVIDADE = model.Atividade;
                         item.INFORMACAO = model.Informacao;
+                        item.STATUS = model.Status;
 
                     });
 
@@ -161,7 +164,8 @@ namespace ControleVisita.Models
                         INFORMACAO = model.Informacao,
                         DTAINCLUSAO = DateTime.Now,
                         USUARIOINCLUSAO = "",
-                        CODEMPRESA = codsubempresa
+                        CODEMPRESA = codsubempresa,
+                        STATUS = model.Status
                     };
 
                     db.CNVISITAPESSOAs.InsertOnSubmit(cNVISITAPESSOA);

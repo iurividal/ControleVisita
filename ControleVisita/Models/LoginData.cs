@@ -58,10 +58,11 @@ namespace ControleVisita.Models
                 //Value = "CMC+6578+RUBEN.REIS+25",
                 //Value = "CMC+9+LEANDRO.AMARAL+11",
                 // Value = "CNMF+27403+FELIPE.LOPES+1",
-                 Value = "CNMF+27514+JOAO.CUSTODIO+4",
+                // Value = "CNMF+27514+JOAO.CUSTODIO+4",
                 // Value = "CMC+6516+SILVANA.SILVA+6",
                // Value = "CMC+6596+JEAN.PARAGUAI+25",
                 //Value = "CMC+6579+LEONARDO.GIMENEZ+26",
+                Value = "CMC+6509+EDSON.RODRIGUES+26",
                 // Value = "CMC+6466+FABYANE.MUNIZ+25",
                 // Value = "CMC+6573+JOACAZ.MARTINS+25",
 

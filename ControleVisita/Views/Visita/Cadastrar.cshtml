@@ -314,7 +314,7 @@
                         </div>
                         <div class="card-footer">
 
-                         
+
                             <a id="editClient" href="@Url.Action("Cadastrar","Clientes",new { @idpessoa=cliente.IdPessoa, @returnUrl = ViewContext.HttpContext.Request.Url.PathAndQuery })"><div style="font-size:1.5rem"><i class="fas fa-user-edit"></i></div></a>
                         </div>
                     </div>
@@ -330,6 +330,9 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-12 form-group">
+                                    Telefone:  @Html.DevExtreme().TextBox().InputAttr("class", "telefone").Value(cliente.Telefone).ID("telefone_cliente").ReadOnly(true)
+                                </div>
                                 <div class="col-md-12 form-group">
                                     Celular:  @Html.DevExtreme().TextBox().InputAttr("class", "celular").Value(cliente.NroCelularCompleto).Mask("(00) 00000-0000").ID("celular_cliente").ReadOnly(true)
                                 </div>
@@ -462,6 +465,7 @@
                         //PERFIL
                         $(".email").val(e.selectedItem.Email);
                         $(".celular").val(e.selectedItem.NroCelularCompleto);
+                        $(".telefone").val(e.selectedItem.TelefoneCompleto);
                         $(".whatsapp").val(e.selectedItem.WhatsApp);
 
                         //$(".selected").show();

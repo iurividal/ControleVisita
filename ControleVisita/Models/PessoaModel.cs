@@ -35,6 +35,8 @@ namespace ControleVisita.Models
         [DisplayName("DDD Tel.")]
         public string DDDFone { get; set; }
 
+        public string TelefoneCompleto => (!string.IsNullOrEmpty(DDDFone) ? DDDFone : "") +" "+ (!string.IsNullOrEmpty(Telefone) ? Telefone : "");
+
 
         [DisplayName("DDD Cel.")]
         public string DddCelular { get; set; }
@@ -64,6 +66,10 @@ namespace ControleVisita.Models
 
         [DisplayName("Informações")]
         public string Informacao { get; set; }
+
+        public string Status { get; set; }
+
+        public DateTime DataInclusao { get; set; }
 
         public string Grupo { get; set; }// NomeCompleto.ToUpper().Substring(0, 1);
     }

@@ -12,6 +12,7 @@
     .lower {
         text-transform: lowercase;
     }
+
     .input-validation-error {
         border: solid 1px #ff0000;
     }
@@ -29,14 +30,21 @@
 
     <div class="form-row">
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
 
             @Html.LabelFor(model => model.TipoPessoa)*
             @Html.DropDownListFor(model => model.TipoPessoa, new SelectList(ViewBag.ListTipoPessoa, "Value", "Text", "1"), new { @class = "form-control" })
 
         </div>
+        <div class="form-group col-md-4">
+          @Html.LabelFor(a => a.Status)
+            @(Html.DevExtreme().SelectBoxFor(model => model.Status)
+                .DataSource(new[] { "Ativo", "Inativo" })
+            )
+        </div>
 
-        <div class="form-group col-md-6">
+
+        <div class="form-group col-md-4">
             @Html.LabelFor(a => a.Documento)
             @Html.TextBoxFor(a => a.Documento, new { @class = "form-control cpf" })
         </div>

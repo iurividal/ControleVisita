@@ -164,6 +164,7 @@
       <Column Name="DTAINCLUSAO" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" DefaultValue="SYSDATE" Precision="0" ed:ValidateRequired="false" ed:Guid="58f72b91-a881-49d5-a234-d961fc028d9d" />
       <Column Name="USUARIOINCLUSAO" Type="System.String" DbType="VARCHAR2(40 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="40" ed:ValidateMaxLength="40" ed:ValidateRequired="false" ed:Guid="1dc2ce31-109d-454c-9d24-9dacf44afc07" />
       <Column Name="CODEMPRESA" Type="System.Decimal" DbType="NUMBER NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="2c5da606-ffb4-4588-b0f8-e3148b6b3b7d" />
+      <Column Name="STATUS" Type="System.String" DbType="VARCHAR2(20 CHAR) NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="30b17a19-788f-4f2b-b723-c2d8aa51ff28" />
     </Type>
   </Table>
   <Table Name="CN_VISITAS" Member="CNVISITAs">

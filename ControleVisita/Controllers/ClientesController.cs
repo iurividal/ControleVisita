@@ -20,6 +20,8 @@ namespace ControleVisita.Controllers
             ViewBag.ListTipoPessoa = Models.ClienteData.GetTipoPessoa();
 
             var model = new PessoaModel();
+
+            model.Status = "Ativo";
             if (idpessoa != 0)
             {
                 model = ClienteData.Get(idpessoa, User.Identity.GetEmpresa()).Result;
